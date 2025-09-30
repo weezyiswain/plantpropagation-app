@@ -212,7 +212,7 @@ export default function PropagationForm() {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>USDA Growing Zone</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
+                            <Select onValueChange={field.onChange} value={field.value || undefined}>
                               <FormControl>
                                 <SelectTrigger data-testid="select-zone">
                                   <SelectValue placeholder="Select your zone" />
@@ -242,7 +242,7 @@ export default function PropagationForm() {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Plant Maturity Level</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
+                            <Select onValueChange={field.onChange} value={field.value || undefined}>
                               <FormControl>
                                 <SelectTrigger data-testid="select-maturity">
                                   <SelectValue placeholder="Select maturity level" />
@@ -267,7 +267,7 @@ export default function PropagationForm() {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Current Soil Conditions</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
+                            <Select onValueChange={field.onChange} value={field.value || undefined}>
                               <FormControl>
                                 <SelectTrigger data-testid="select-soil">
                                   <SelectValue placeholder="Select soil type" />
@@ -297,7 +297,7 @@ export default function PropagationForm() {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Growing Environment</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
+                            <Select onValueChange={field.onChange} value={field.value || undefined}>
                               <FormControl>
                                 <SelectTrigger data-testid="select-environment">
                                   <SelectValue placeholder="Select environment" />
@@ -373,7 +373,7 @@ export default function PropagationForm() {
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Experience Level</FormLabel>
-                              <Select onValueChange={field.onChange} value={field.value}>
+                              <Select onValueChange={field.onChange} value={field.value || undefined}>
                                 <FormControl>
                                   <SelectTrigger data-testid="select-experience">
                                     <SelectValue placeholder="Select experience" />
