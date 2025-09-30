@@ -23,7 +23,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertPropagationRequestSchema } from "@shared/schema";
 import { z } from "zod";
-import { Sprout, ArrowLeft, Info } from "lucide-react";
+import { Sprout, ArrowLeft, Info, ExternalLink } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -228,7 +228,17 @@ export default function PropagationForm() {
                             </Select>
                             <p className="text-xs text-muted-foreground flex items-center gap-1">
                               <Info className="h-3 w-3" />
-                              Don't know your zone? Look it up based on your location.
+                              Don't know your zone?{" "}
+                              <a
+                                href="https://planthardiness.ars.usda.gov/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-primary hover:underline inline-flex items-center gap-1"
+                                data-testid="link-zone-finder"
+                              >
+                                Find it here
+                                <ExternalLink className="h-3 w-3" />
+                              </a>
                             </p>
                             <FormMessage />
                           </FormItem>
