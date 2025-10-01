@@ -181,7 +181,7 @@ export default function Results() {
               </div>
               
               <p className="text-muted-foreground">
-                Customized for Zone {request.zone} • {request.maturity} plant • {request.environment} environment
+                Customized for Zone {request.zone}
               </p>
             </div>
 
