@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sprout, Calendar, Scissors, Sun, Droplet, Leaf, AlertCircle, ArrowLeft, CheckCircle } from "lucide-react";
 import { calculatePropagationWindows, getRecommendedMethod } from "@/lib/propagation-calculator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AdPlaceholder } from "@/components/ad-placeholder";
 
 export default function Results() {
   const { requestId } = useParams<{ requestId: string }>();
@@ -115,6 +116,10 @@ export default function Results() {
               </p>
             </div>
 
+            {/* Top Banner Ad */}
+            <AdPlaceholder slot="results-top-banner" format="leaderboard" />
+            <AdPlaceholder slot="results-top-mobile" format="mobile-banner" />
+
             <div className="grid lg:grid-cols-3 gap-8">
               {/* Main Content */}
               <div className="lg:col-span-2 space-y-8">
@@ -192,6 +197,10 @@ export default function Results() {
                     </div>
                   </CardContent>
                 </Card>
+
+                {/* Mid-Content Ad */}
+                <AdPlaceholder slot="results-mid-content" format="leaderboard" />
+                <AdPlaceholder slot="results-mid-mobile" format="mobile-banner" />
 
                 {/* Propagation Methods */}
                 <Card className="shadow-lg">
@@ -273,6 +282,10 @@ export default function Results() {
                     </Tabs>
                   </CardContent>
                 </Card>
+
+                {/* Bottom Banner Ad */}
+                <AdPlaceholder slot="results-bottom-banner" format="leaderboard" />
+                <AdPlaceholder slot="results-bottom-mobile" format="mobile-banner" />
               </div>
 
               {/* Sidebar */}
@@ -305,6 +318,9 @@ export default function Results() {
                     </div>
                   </CardContent>
                 </Card>
+
+                {/* Sidebar Ad 1 */}
+                <AdPlaceholder slot="results-sidebar-1" format="rectangle" />
 
                 {/* Care Tips */}
                 <Card className="shadow-lg">
@@ -385,6 +401,9 @@ export default function Results() {
                     </div>
                   </CardContent>
                 </Card>
+
+                {/* Sidebar Ad 2 */}
+                <AdPlaceholder slot="results-sidebar-2" format="rectangle" />
 
                 {/* Actions */}
                 <div className="space-y-3">
