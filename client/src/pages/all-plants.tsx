@@ -190,51 +190,50 @@ export default function AllPlants() {
             </div>
 
             {/* Sort and Filter Controls */}
-            <div className="bg-card border border-border rounded-lg p-6 mb-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Sort By */}
-                <div className="space-y-2">
-                  <Label htmlFor="sort-select" className="flex items-center gap-2 text-sm font-medium">
-                    <ArrowUpDown className="h-4 w-4" />
-                    Sort By
-                  </Label>
-                  <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
-                    <SelectTrigger id="sort-select" data-testid="select-sort">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="name-asc">Name (A-Z)</SelectItem>
-                      <SelectItem value="name-desc">Name (Z-A)</SelectItem>
-                      <SelectItem value="difficulty-asc">Difficulty (Easy to Hard)</SelectItem>
-                      <SelectItem value="difficulty-desc">Difficulty (Hard to Easy)</SelectItem>
-                      <SelectItem value="success-desc">Success Rate (High to Low)</SelectItem>
-                      <SelectItem value="success-asc">Success Rate (Low to High)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+            <div className="flex flex-wrap items-center gap-4 mb-6">
+              {/* Sort By */}
+              <div className="flex items-center gap-2">
+                <Label htmlFor="sort-select" className="text-xs text-muted-foreground whitespace-nowrap flex items-center gap-1">
+                  <ArrowUpDown className="h-3 w-3" />
+                  Sort
+                </Label>
+                <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
+                  <SelectTrigger id="sort-select" data-testid="select-sort" className="h-8 w-[180px] text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="name-asc">Name (A-Z)</SelectItem>
+                    <SelectItem value="name-desc">Name (Z-A)</SelectItem>
+                    <SelectItem value="difficulty-asc">Difficulty (Easy to Hard)</SelectItem>
+                    <SelectItem value="difficulty-desc">Difficulty (Hard to Easy)</SelectItem>
+                    <SelectItem value="success-desc">Success Rate (High to Low)</SelectItem>
+                    <SelectItem value="success-asc">Success Rate (Low to High)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-                {/* Filter by Difficulty */}
-                <div className="space-y-2">
-                  <Label htmlFor="difficulty-filter" className="text-sm font-medium">
-                    Filter by Difficulty
-                  </Label>
-                  <Select value={difficultyFilter} onValueChange={(value) => setDifficultyFilter(value as DifficultyFilter)}>
-                    <SelectTrigger id="difficulty-filter" data-testid="select-difficulty-filter">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Difficulties</SelectItem>
-                      <SelectItem value="easy">Easy</SelectItem>
-                      <SelectItem value="medium">Medium</SelectItem>
-                      <SelectItem value="hard">Hard</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+              {/* Filter by Difficulty */}
+              <div className="flex items-center gap-2">
+                <Label htmlFor="difficulty-filter" className="text-xs text-muted-foreground whitespace-nowrap">
+                  Filter
+                </Label>
+                <Select value={difficultyFilter} onValueChange={(value) => setDifficultyFilter(value as DifficultyFilter)}>
+                  <SelectTrigger id="difficulty-filter" data-testid="select-difficulty-filter" className="h-8 w-[140px] text-xs">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Difficulties</SelectItem>
+                    <SelectItem value="easy">Easy</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="hard">Hard</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               
+              {/* Count Display */}
               {difficultyFilter !== 'all' && (
-                <div className="mt-4 text-sm text-muted-foreground">
-                  Showing {filteredAndSortedPlants.length} {difficultyFilter} plant{filteredAndSortedPlants.length !== 1 ? 's' : ''}
+                <div className="text-xs text-muted-foreground ml-auto">
+                  {filteredAndSortedPlants.length} {difficultyFilter} plant{filteredAndSortedPlants.length !== 1 ? 's' : ''}
                 </div>
               )}
             </div>
