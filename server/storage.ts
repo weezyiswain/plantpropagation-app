@@ -54,7 +54,70 @@ export class MemStorage implements IStorage {
   }
   
   async getAllPlants(): Promise<Plant[]> {
-    return Array.from(this.plants.values());
+    const inMemoryPlants = Array.from(this.plants.values());
+    
+    // Try Supabase/Postgres first if DATABASE_URL is configured
+    if (process.env.DATABASE_URL) {
+      try {
+        console.log('[Storage] Fetching all plants from Supabase...');
+        const pool = new Pool({ 
+          connectionString: process.env.DATABASE_URL,
+          ssl: { rejectUnauthorized: false }
+        });
+        const db = drizzle(pool);
+        
+        const results = await db.execute(
+          sql`SELECT * FROM "plants" ORDER BY name`
+        );
+        
+        await pool.end();
+        
+        console.log('[Storage] Supabase returned', results.rows?.length || 0, 'plants');
+        
+        if (results.rows && results.rows.length > 0) {
+          // Map database rows to Plant schema
+          const supabasePlants = results.rows.map((row: any) => ({
+            id: row.name.toLowerCase().replace(/\s+/g, '-'),
+            scientificName: row.name,
+            commonName: row.name,
+            imageUrl: null,
+            difficulty: row.difficulty.toLowerCase(),
+            successRate: row.difficulty === 'Easy' ? 90 : row.difficulty === 'Medium' ? 80 : 70,
+            methods: [row.propagation_method],
+            timeToRoot: '2-4 weeks',
+            optimalMonths: [],
+            secondaryMonths: null,
+            zoneRecommendations: { zones: row.zones },
+            propagationSteps: { [row.propagation_method]: [{ step: 1, instruction: row.tips }] },
+            careInstructions: { 
+              light: 'Bright indirect light',
+              watering: 'Regular',
+              fertilizer: 'Monthly',
+              season: row.best_season
+            }
+          } as Plant));
+          
+          // Merge with in-memory plants, with in-memory taking priority (better data)
+          const plantsMap = new Map<string, Plant>();
+          
+          // Add Supabase plants first
+          supabasePlants.forEach(plant => plantsMap.set(plant.id, plant));
+          
+          // Override with in-memory plants (they have detailed propagation steps)
+          inMemoryPlants.forEach(plant => plantsMap.set(plant.id, plant));
+          
+          const mergedPlants = Array.from(plantsMap.values());
+          console.log('[Storage] Returning', mergedPlants.length, 'plants (merged from Supabase + in-memory)');
+          return mergedPlants;
+        }
+      } catch (err) {
+        console.error('[Storage] Database query error:', err);
+      }
+    }
+    
+    // Fallback to in-memory plants only
+    console.log('[Storage] Using in-memory plants only');
+    return inMemoryPlants;
   }
   
   async getPlantById(id: string): Promise<Plant | undefined> {
@@ -177,7 +240,6 @@ export class MemStorage implements IStorage {
     const id = randomUUID();
     const request: PropagationRequest = { 
       ...insertRequest,
-      preferredMethod: insertRequest.preferredMethod || null,
       id,
       createdAt: new Date()
     };
