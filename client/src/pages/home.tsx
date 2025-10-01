@@ -132,7 +132,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-              Find the Perfect Time to <span className="text-primary">Propagate</span> Your Plants
+              Propagate with Confidence: Personalized Guides for 100+ Plants
             </h2>
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
               Get personalized propagation windows and detailed guides based on your plant type, growing zone, and local conditions. Browse our database of {plants.length}+ plants with step-by-step instructions.
