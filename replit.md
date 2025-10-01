@@ -51,7 +51,7 @@ Preferred communication style: Simple, everyday language.
 
 **Key Pages:**
 - `/` - Homepage with plant search, popular plants, and zone selector in header
-- `/all-plants` - Complete alphabetical list with simplified display (name + difficulty only)
+- `/all-plants` - Complete plant list with sorting (6 options) and difficulty filtering, simplified display
 - `/results/:requestId` - Propagation results and recommendations with instant access
 
 ### Data Storage
@@ -66,10 +66,10 @@ Preferred communication style: Simple, everyday language.
 - No hardcoded plant fallbacks - returns empty arrays when database unavailable
 - Interface-based storage abstraction (IStorage) for flexibility
 - Uses node-postgres (pg) adapter with SSL for Supabase pooler compatibility
-- Centralized `slugify()` function for consistent ID generation from plant names (handles apostrophes, special characters)
+- **ID System**: Plant IDs use database primary key (bigint) converted to string for guaranteed uniqueness and consistency
 - Database contains 30+ curated plants with full propagation details
 - **Robust search**: searchPlants() includes fallback logic for databases with or without the `name` column - attempts query with `name` field first, falls back to `common_name` and `scientific_name` only if name column doesn't exist (error code 42703)
-- **Connection safety**: All database operations use finally blocks to ensure pool cleanup, preventing connection leaks
+- **Connection safety**: All database operations (getAllPlants, getPlantById, searchPlants) use finally blocks to ensure pool cleanup, preventing connection leaks on both success and error paths
 
 **Data Models:**
 - JSON fields for complex data (propagation methods, monthly arrays, zone-specific recommendations, step-by-step instructions)
@@ -81,7 +81,8 @@ Preferred communication style: Simple, everyday language.
 **UI Component Library:**
 - Radix UI primitives for accessible, unstyled components
 - shadcn/ui configuration for component styling and theming
-- Custom neutral-based color scheme with plant/nature theme
+- Nature-focused color scheme with deep forest greens (hsl(95, 60%, 25%)), cream backgrounds (hsl(40, 35%, 96%)), and organic rounded elements (0.75rem radius)
+- Light theme emphasizes natural aesthetics with soft shadows and smooth transitions
 
 **Development Tools:**
 - Replit-specific plugins for development (cartographer, dev banner, runtime error overlay)
@@ -138,7 +139,13 @@ Preferred communication style: Simple, everyday language.
 - Secondary line: `common_name` • `scientific_name` (italicized) on same line with bullet separator
 - Clean, minimal layout showing essential information only
 - PlantCard and All Plants page also show difficulty level and success rate
-- Alphabetically sorted for easy browsing on All Plants page
+
+**Sorting & Filtering (All Plants Page):**
+- **6 Sort Options**: Name (A-Z), Name (Z-A), Difficulty (Easy to Hard), Difficulty (Hard to Easy), Success Rate (High to Low), Success Rate (Low to High)
+- **Default Sort**: Alphabetically by name (A-Z) for easy browsing
+- **Difficulty Filter**: All Difficulties, Easy, Medium, Hard - with dynamic count display showing number of filtered plants
+- Real-time UI updates when sort or filter changes
+- Clean, user-friendly controls with labeled dropdowns and visual feedback
 
 **Component Architecture:**
 - PlantCard and PlantSearch accept onPlantSelect callbacks for unified plant selection
