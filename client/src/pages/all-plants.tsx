@@ -1,17 +1,45 @@
-import { useQuery } from "@tanstack/react-query";
-import { Plant } from "@shared/schema";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { Plant, InsertPropagationRequest } from "@shared/schema";
 import { Button } from "@/components/ui/button";
-import { Sprout, ArrowLeft, AlertCircle } from "lucide-react";
+import { Sprout, ArrowLeft, AlertCircle, MapPin } from "lucide-react";
 import { useLocation } from "wouter";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { autoDetectUSDAZone } from "@/lib/zone-detection";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+
+const USDA_ZONES = [
+  "1a", "1b", "2a", "2b", "3a", "3b", "4a", "4b", "5a", "5b",
+  "6a", "6b", "7a", "7b", "8a", "8b", "9a", "9b", "10a", "10b",
+  "11a", "11b", "12a", "12b", "13a", "13b"
+];
 
 export default function AllPlants() {
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
+  const [selectedZone, setSelectedZone] = useState<string>(() => {
+    return localStorage.getItem('userZone') || '';
+  });
   
   const { data: plants = [], isLoading, isError, error, refetch } = useQuery<Plant[]>({
     queryKey: ["/api/plants"],
   });
+
+  // Auto-detect zone on mount if not already set
+  useEffect(() => {
+    const detectZone = async () => {
+      if (!selectedZone) {
+        const detectedZone = await autoDetectUSDAZone();
+        if (detectedZone) {
+          setSelectedZone(detectedZone);
+          localStorage.setItem('userZone', detectedZone);
+        }
+      }
+    };
+    detectZone();
+  }, []);
 
   useEffect(() => {
     document.title = "All Plants - PlantProp";
@@ -21,12 +49,49 @@ export default function AllPlants() {
     }
   }, []);
 
+  const handleZoneChange = (zone: string) => {
+    setSelectedZone(zone);
+    localStorage.setItem('userZone', zone);
+  };
+
+  const createRequestMutation = useMutation({
+    mutationFn: async (data: InsertPropagationRequest) => {
+      const res = await apiRequest("POST", "/api/propagation-requests", data);
+      return res.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/propagation-requests"] });
+      setLocation(`/results/${data.id}`);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message || "Please select your growing zone first",
+        variant: "destructive",
+      });
+    },
+  });
+
   const sortedPlants = [...plants].sort((a, b) => 
     a.commonName.localeCompare(b.commonName)
   );
 
   const handlePlantClick = (plantId: string) => {
-    setLocation(`/propagation-form/${plantId}`);
+    if (!selectedZone) {
+      toast({
+        title: "Zone Required",
+        description: "Please select your growing zone first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    createRequestMutation.mutate({
+      plantId,
+      zone: selectedZone,
+      maturity: "mature",
+      environment: "inside",
+    });
   };
 
   return (
@@ -44,14 +109,34 @@ export default function AllPlants() {
                 <p className="text-xs text-muted-foreground">Smart Propagation Guide</p>
               </div>
             </div>
-            <Button
-              variant="ghost"
-              onClick={() => setLocation("/")}
-              data-testid="button-back-home"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Home
-            </Button>
+            
+            <div className="flex items-center space-x-4">
+              {/* Zone Selector */}
+              <div className="flex items-center space-x-2">
+                <MapPin className="h-4 w-4 text-muted-foreground" />
+                <Select value={selectedZone} onValueChange={handleZoneChange}>
+                  <SelectTrigger className="w-[120px]" data-testid="select-zone-header">
+                    <SelectValue placeholder="Select zone" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {USDA_ZONES.map((zone) => (
+                      <SelectItem key={zone} value={zone}>
+                        Zone {zone}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <Button
+                variant="ghost"
+                onClick={() => setLocation("/")}
+                data-testid="button-back-home"
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Home
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -119,19 +204,11 @@ export default function AllPlants() {
                           {plant.scientificName}
                         </p>
                       </div>
-                      <div className="flex items-center space-x-4">
-                        <div className="text-right">
-                          <p className="text-xs text-muted-foreground">Difficulty</p>
-                          <p className="text-sm font-medium capitalize text-foreground">
-                            {plant.difficulty}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-xs text-muted-foreground">Success Rate</p>
-                          <p className="text-sm font-medium text-foreground">
-                            {plant.successRate}%
-                          </p>
-                        </div>
+                      <div className="text-right">
+                        <p className="text-xs text-muted-foreground">Difficulty</p>
+                        <p className="text-sm font-medium capitalize text-foreground">
+                          {plant.difficulty}
+                        </p>
                       </div>
                     </div>
                   </button>

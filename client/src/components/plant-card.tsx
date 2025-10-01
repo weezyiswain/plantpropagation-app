@@ -4,9 +4,10 @@ import { useLocation } from "wouter";
 
 interface PlantCardProps {
   plant: Plant;
+  onPlantSelect?: (plantId: string) => void;
 }
 
-export function PlantCard({ plant }: PlantCardProps) {
+export function PlantCard({ plant, onPlantSelect }: PlantCardProps) {
   const [, setLocation] = useLocation();
 
   const difficultyColors = {
@@ -15,10 +16,18 @@ export function PlantCard({ plant }: PlantCardProps) {
     hard: "bg-orange-100 text-orange-800",
   };
 
+  const handleClick = () => {
+    if (onPlantSelect) {
+      onPlantSelect(plant.id);
+    } else {
+      setLocation(`/propagation-form/${plant.id}`);
+    }
+  };
+
   return (
     <Card
       className="plant-card cursor-pointer overflow-hidden"
-      onClick={() => setLocation(`/propagation-form/${plant.id}`)}
+      onClick={handleClick}
       data-testid={`card-plant-${plant.id}`}
     >
       {plant.imageUrl && (

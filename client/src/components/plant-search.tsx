@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { useLocation } from "wouter";
 
 interface PlantSearchProps {
-  onPlantSelect?: (plant: Plant) => void;
+  onPlantSelect?: (plantId: string) => void;
 }
 
 export function PlantSearch({ onPlantSelect }: PlantSearchProps) {
@@ -39,7 +39,7 @@ export function PlantSearch({ onPlantSelect }: PlantSearchProps) {
 
   const handlePlantClick = (plant: Plant) => {
     if (onPlantSelect) {
-      onPlantSelect(plant);
+      onPlantSelect(plant.id);
     } else {
       setLocation(`/propagation-form/${plant.id}`);
     }
