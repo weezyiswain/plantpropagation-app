@@ -259,6 +259,56 @@ export default function PropagationForm() {
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-8">
+                      {/* Plant Maturity */}
+                      <FormField
+                        control={form.control}
+                        name="maturity"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Plant Maturity Level</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value || undefined}>
+                              <FormControl>
+                                <SelectTrigger data-testid="select-maturity">
+                                  <SelectValue placeholder="Select maturity level" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="seedling">Sprout (0-6 months)</SelectItem>
+                                <SelectItem value="young">Young (6 months - 2 years)</SelectItem>
+                                <SelectItem value="mature">Mature (2-5 years)</SelectItem>
+                                <SelectItem value="established">Established (5+ years)</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* Growing Environment */}
+                      <FormField
+                        control={form.control}
+                        name="environment"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Growing Environment</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value || undefined}>
+                              <FormControl>
+                                <SelectTrigger data-testid="select-environment">
+                                  <SelectValue placeholder="Select environment" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="indoor">Indoor only</SelectItem>
+                                <SelectItem value="outdoor">Outdoor only</SelectItem>
+                                <SelectItem value="greenhouse">Greenhouse</SelectItem>
+                                <SelectItem value="mixed">Indoor/outdoor seasonal</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
                       {/* USDA Growing Zone */}
                       <FormField
                         control={form.control}
@@ -299,31 +349,6 @@ export default function PropagationForm() {
                         )}
                       />
 
-                      {/* Plant Maturity */}
-                      <FormField
-                        control={form.control}
-                        name="maturity"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Plant Maturity Level</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value || undefined}>
-                              <FormControl>
-                                <SelectTrigger data-testid="select-maturity">
-                                  <SelectValue placeholder="Select maturity level" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="seedling">Sprout (0-6 months)</SelectItem>
-                                <SelectItem value="young">Young (6 months - 2 years)</SelectItem>
-                                <SelectItem value="mature">Mature (2-5 years)</SelectItem>
-                                <SelectItem value="established">Established (5+ years)</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
                       {/* Soil Conditions */}
                       <FormField
                         control={form.control}
@@ -347,31 +372,6 @@ export default function PropagationForm() {
                                 <SelectItem value="sandy">Sandy/succulent mix</SelectItem>
                                 <SelectItem value="clay-heavy">Clay-heavy soil</SelectItem>
                                 <SelectItem value="organic-rich">Organic-rich compost</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      {/* Growing Environment */}
-                      <FormField
-                        control={form.control}
-                        name="environment"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Growing Environment</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value || undefined}>
-                              <FormControl>
-                                <SelectTrigger data-testid="select-environment">
-                                  <SelectValue placeholder="Select environment" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="indoor">Indoor only</SelectItem>
-                                <SelectItem value="outdoor">Outdoor only</SelectItem>
-                                <SelectItem value="greenhouse">Greenhouse</SelectItem>
-                                <SelectItem value="mixed">Indoor/outdoor seasonal</SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
