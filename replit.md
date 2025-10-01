@@ -2,7 +2,7 @@
 
 ## Overview
 
-PlantProp is a web application that helps users determine the optimal time and method to propagate their plants. The application provides personalized propagation recommendations based on user inputs including plant type, growing zone, maturity level, soil conditions, and experience level. It features a comprehensive plant database with detailed propagation instructions, success rates, and care guidelines tailored to different hardiness zones and seasonal timing.
+PlantProp is a web application that helps users determine the optimal time and method to propagate their plants. The application provides personalized propagation recommendations based on user inputs including plant type, growing zone, maturity level, and growing environment. It features a comprehensive plant database with detailed propagation instructions, success rates, and care guidelines tailored to different hardiness zones and seasonal timing.
 
 ## User Preferences
 
@@ -59,7 +59,7 @@ Preferred communication style: Simple, everyday language.
 
 **Database Schema (PostgreSQL via Drizzle):**
 - **plants table**: Core plant data including scientific/common names, difficulty levels, success rates, propagation methods, seasonal timing, zone recommendations, step-by-step instructions, and care guidelines
-- **propagation_requests table**: User propagation requests with plant references, zone information, maturity levels, soil conditions, environment types, preferred methods, and experience levels
+- **propagation_requests table**: User propagation requests with plant references, zone information, maturity levels, and environment types (simplified to 3 essential fields)
 - **users table**: User authentication data (username, password)
 
 **Current Implementation:**
@@ -110,6 +110,14 @@ Preferred communication style: Simple, everyday language.
 - Infinite stale time for development efficiency
 
 ### Smart Features
+
+**Simplified Propagation Form:**
+- Streamlined to 3 essential fields for optimal user experience:
+  1. **Plant Maturity Level** - Seedling, Young, Mature, or Established
+  2. **Growing Environment** - Inside, Outside, or Greenhouse
+  3. **USDA Growing Zone** - Auto-detected or manually selected
+- Success rate adjustments based on maturity (+5% established, -10% seedling) and environment (+5% greenhouse, -5% outside)
+- Removed fields: soil conditions, preferred method, experience level (simplified for clarity)
 
 **Auto-Detection of USDA Hardiness Zone:**
 - Automatically detects user's USDA growing zone based on IP location
