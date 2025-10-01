@@ -204,7 +204,7 @@ export default function Home() {
               <div className="space-y-6">
                 <div>
                   <PlantSearch onPlantSelect={handleQuickPlantSelect} />
-                  <p className="text-sm text-muted-foreground mt-2 transition-opacity duration-500">
+                  <p className="text-sm text-muted-foreground mt-2 transition-opacity duration-500 text-left">
                     🌿 Try: {searchSuggestions[currentSuggestionIndex]}…
                   </p>
                 </div>
