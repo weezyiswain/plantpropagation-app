@@ -156,7 +156,7 @@ export default function Results() {
               <div className="flex items-center mb-4">
                 <Button
                   variant="ghost"
-                  onClick={() => window.history.back()}
+                  onClick={() => setLocation("/all-plants")}
                   data-testid="button-back-home"
                   className="flex-shrink-0"
                 >
