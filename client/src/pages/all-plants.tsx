@@ -1,11 +1,12 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Plant, InsertPropagationRequest } from "@shared/schema";
 import { Button } from "@/components/ui/button";
-import { Sprout, ArrowLeft, AlertCircle, MapPin, ArrowUpDown } from "lucide-react";
+import { Sprout, ArrowLeft, AlertCircle, MapPin, ArrowUpDown, Search } from "lucide-react";
 import { useLocation } from "wouter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { autoDetectUSDAZone } from "@/lib/zone-detection";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -29,6 +30,7 @@ export default function AllPlants() {
   });
   const [sortBy, setSortBy] = useState<SortOption>('name-asc');
   const [difficultyFilter, setDifficultyFilter] = useState<DifficultyFilter>('all');
+  const [searchQuery, setSearchQuery] = useState('');
   
   const { data: plants = [], isLoading, isError, error, refetch } = useQuery<Plant[]>({
     queryKey: ["/api/plants"],
@@ -92,8 +94,22 @@ export default function AllPlants() {
 
   const filteredAndSortedPlants = plants
     .filter((plant) => {
-      if (difficultyFilter === 'all') return true;
-      return plant.difficulty?.toLowerCase() === difficultyFilter;
+      // Filter by difficulty
+      if (difficultyFilter !== 'all' && plant.difficulty?.toLowerCase() !== difficultyFilter) {
+        return false;
+      }
+      
+      // Filter by search query
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        return (
+          plant.name?.toLowerCase().includes(query) ||
+          plant.commonName?.toLowerCase().includes(query) ||
+          plant.scientificName?.toLowerCase().includes(query)
+        );
+      }
+      
+      return true;
     })
     .sort((a, b) => {
       switch (sortBy) {
@@ -194,53 +210,67 @@ export default function AllPlants() {
               </p>
             </div>
 
-            {/* Sort and Filter Controls */}
-            <div className="flex flex-wrap items-center gap-4 mb-6">
-              {/* Sort By */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="sort-select" className="text-xs text-muted-foreground whitespace-nowrap flex items-center gap-1">
-                  <ArrowUpDown className="h-3 w-3" />
-                  Sort
-                </Label>
-                <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
-                  <SelectTrigger id="sort-select" data-testid="select-sort" className="h-8 w-[180px] text-xs">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="name-asc">Name (A-Z)</SelectItem>
-                    <SelectItem value="name-desc">Name (Z-A)</SelectItem>
-                    <SelectItem value="difficulty-asc">Difficulty (Easy to Hard)</SelectItem>
-                    <SelectItem value="difficulty-desc">Difficulty (Hard to Easy)</SelectItem>
-                    <SelectItem value="success-desc">Success Rate (High to Low)</SelectItem>
-                    <SelectItem value="success-asc">Success Rate (Low to High)</SelectItem>
-                  </SelectContent>
-                </Select>
+            {/* Search and Filter Controls */}
+            <div className="space-y-4 mb-6">
+              {/* Search Bar */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="text"
+                  placeholder="Search plants by name..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 h-10"
+                  data-testid="input-search-plants"
+                />
               </div>
 
-              {/* Filter by Difficulty */}
-              <div className="flex items-center gap-2">
-                <Label htmlFor="difficulty-filter" className="text-xs text-muted-foreground whitespace-nowrap">
-                  Filter
-                </Label>
-                <Select value={difficultyFilter} onValueChange={(value) => setDifficultyFilter(value as DifficultyFilter)}>
-                  <SelectTrigger id="difficulty-filter" data-testid="select-difficulty-filter" className="h-8 w-[140px] text-xs">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Difficulties</SelectItem>
-                    <SelectItem value="easy">Easy</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="hard">Hard</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              {/* Count Display */}
-              {difficultyFilter !== 'all' && (
-                <div className="text-xs text-muted-foreground ml-auto">
-                  {filteredAndSortedPlants.length} {difficultyFilter} plant{filteredAndSortedPlants.length !== 1 ? 's' : ''}
+              {/* Sort and Filter Row */}
+              <div className="flex flex-wrap items-center gap-4">
+                {/* Sort By */}
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="sort-select" className="text-xs text-muted-foreground whitespace-nowrap flex items-center gap-1">
+                    <ArrowUpDown className="h-3 w-3" />
+                    Sort
+                  </Label>
+                  <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
+                    <SelectTrigger id="sort-select" data-testid="select-sort" className="h-8 w-[180px] text-xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="name-asc">Name (A-Z)</SelectItem>
+                      <SelectItem value="name-desc">Name (Z-A)</SelectItem>
+                      <SelectItem value="difficulty-asc">Difficulty (Easy to Hard)</SelectItem>
+                      <SelectItem value="difficulty-desc">Difficulty (Hard to Easy)</SelectItem>
+                      <SelectItem value="success-desc">Success Rate (High to Low)</SelectItem>
+                      <SelectItem value="success-asc">Success Rate (Low to High)</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-              )}
+
+                {/* Filter by Difficulty */}
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="difficulty-filter" className="text-xs text-muted-foreground whitespace-nowrap">
+                    Filter
+                  </Label>
+                  <Select value={difficultyFilter} onValueChange={(value) => setDifficultyFilter(value as DifficultyFilter)}>
+                    <SelectTrigger id="difficulty-filter" data-testid="select-difficulty-filter" className="h-8 w-[140px] text-xs">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Difficulties</SelectItem>
+                      <SelectItem value="easy">Easy</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
+                      <SelectItem value="hard">Hard</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                {/* Results Count */}
+                <div className="text-xs text-muted-foreground ml-auto">
+                  {filteredAndSortedPlants.length} plant{filteredAndSortedPlants.length !== 1 ? 's' : ''}
+                </div>
+              </div>
             </div>
 
             {isLoading ? (
