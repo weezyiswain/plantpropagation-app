@@ -214,13 +214,13 @@ export default function AllPlants() {
             <div className="flex items-center gap-4 mb-6">
               {/* Search Bar - Left side, 1/3 width */}
               <div className="relative flex-1 max-w-xs">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-primary" />
                 <Input
                   type="text"
                   placeholder="Search plants..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 h-10"
+                  className="pl-9 h-10 border-2 border-primary/30 focus:border-primary focus-visible:ring-primary"
                   data-testid="input-search-plants"
                 />
               </div>
@@ -239,7 +239,7 @@ export default function AllPlants() {
                     Sort
                   </Label>
                   <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
-                    <SelectTrigger id="sort-select" data-testid="select-sort" className="h-8 w-[180px] text-xs">
+                    <SelectTrigger id="sort-select" data-testid="select-sort" className="h-8 w-[180px] text-xs border-2 border-primary/30 focus:border-primary focus:ring-primary">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -259,7 +259,7 @@ export default function AllPlants() {
                     Filter
                   </Label>
                   <Select value={difficultyFilter} onValueChange={(value) => setDifficultyFilter(value as DifficultyFilter)}>
-                    <SelectTrigger id="difficulty-filter" data-testid="select-difficulty-filter" className="h-8 w-[140px] text-xs">
+                    <SelectTrigger id="difficulty-filter" data-testid="select-difficulty-filter" className="h-8 w-[140px] text-xs border-2 border-primary/30 focus:border-primary focus:ring-primary">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
