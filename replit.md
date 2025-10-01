@@ -57,7 +57,7 @@ Preferred communication style: Simple, everyday language.
 ### Data Storage
 
 **Database Schema (PostgreSQL via Drizzle):**
-- **plants table**: Core plant data including scientific/common names, difficulty levels, success rates, propagation methods, seasonal timing, zone recommendations, step-by-step instructions, and care guidelines
+- **plants table**: Core plant data including name (display name), scientific/common names, difficulty levels, success rates, propagation methods, seasonal timing, zone recommendations, step-by-step instructions, and care guidelines. The `name` field serves as the primary display name, with `common_name` and `scientific_name` shown as secondary information.
 - **propagation_requests table**: User propagation requests with plant references, zone information, maturity levels, and environment types (simplified to 3 essential fields)
 - **users table**: User authentication data (username, password)
 
@@ -68,6 +68,8 @@ Preferred communication style: Simple, everyday language.
 - Uses node-postgres (pg) adapter with SSL for Supabase pooler compatibility
 - Centralized `slugify()` function for consistent ID generation from plant names (handles apostrophes, special characters)
 - Database contains 30+ curated plants with full propagation details
+- **Robust search**: searchPlants() includes fallback logic for databases with or without the `name` column - attempts query with `name` field first, falls back to `common_name` and `scientific_name` only if name column doesn't exist (error code 42703)
+- **Connection safety**: All database operations use finally blocks to ensure pool cleanup, preventing connection leaks
 
 **Data Models:**
 - JSON fields for complex data (propagation methods, monthly arrays, zone-specific recommendations, step-by-step instructions)
@@ -130,12 +132,13 @@ Preferred communication style: Simple, everyday language.
 - User can manually change zone at any time via header selector
 - Silent fallback when detection fails (user selects manually)
 
-**Simplified All Plants Page:**
-- Clean, minimal display showing only essential information
-- Each plant shows: common name, scientific name, and difficulty level
-- Removed success rate metric to reduce cognitive load
-- Instant access to propagation guides with one click
-- Alphabetically sorted for easy browsing
+**Plant Display System:**
+- Consistent display hierarchy across all views (cards, search results, All Plants page)
+- Primary header: `name` field (main display name)
+- Secondary line: `common_name` • `scientific_name` (italicized) on same line with bullet separator
+- Clean, minimal layout showing essential information only
+- PlantCard and All Plants page also show difficulty level and success rate
+- Alphabetically sorted for easy browsing on All Plants page
 
 **Component Architecture:**
 - PlantCard and PlantSearch accept onPlantSelect callbacks for unified plant selection
