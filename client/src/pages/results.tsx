@@ -165,8 +165,8 @@ export default function Results() {
               
               {/* Zone Selector */}
               <div className="flex items-center justify-center space-x-2 text-muted-foreground">
-                <span>Customized for:</span>
                 <MapPin className="h-4 w-4 text-muted-foreground" />
+                <span>Customized for:</span>
                 <Select value={selectedZone} onValueChange={handleZoneChange}>
                   <SelectTrigger className="w-[120px]" data-testid="select-zone-header">
                     <SelectValue placeholder="Select zone" />
