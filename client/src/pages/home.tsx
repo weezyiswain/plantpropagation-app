@@ -147,8 +147,9 @@ export default function Home() {
       <section className="bg-gradient-to-br from-primary/5 to-accent/10 py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-              Propagate with Confidence: Personalized Guides for 100+ Plants
+            <h2 className="text-4xl md:text-5xl text-foreground mb-6">
+              <span className="font-bold">Propagate with Confidence:</span>{" "}
+              <span className="font-normal">Personalized Guides for 100+ Plants</span>
             </h2>
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
               Step-by-step propagation guides for 100+ plants.
