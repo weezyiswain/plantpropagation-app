@@ -151,9 +151,20 @@ export default function Home() {
               <span className="font-bold">Propagate with Confidence:</span>{" "}
               <span className="font-normal">Personalized Guides for 100+ Plants</span>
             </h2>
-            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Step-by-step propagation guides for 100+ plants.
-            </p>
+            <div className="flex flex-col items-center gap-2 mb-8 text-lg text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <span className="text-primary">✔️</span>
+                <span>Step-by-step propagation guides</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-primary">✔️</span>
+                <span>Personalized to your growing zone</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-primary">✔️</span>
+                <span>Success tips for 100+ plants</span>
+              </div>
+            </div>
 
             {/* Plant Search Form */}
             <div className="bg-card rounded-xl shadow-lg p-8 max-w-4xl mx-auto">
