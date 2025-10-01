@@ -71,6 +71,22 @@ export default function Home() {
   const popularPlants = plants.slice(0, 4);
   const topPlants = ["pothos-golden", "snake-plant", "monstera-deliciosa", "fiddle-leaf-fig"];
 
+  // Cycling search suggestions
+  const searchSuggestions = [
+    "Monstera, Rose, Basil",
+    "Pothos, Tomato, Snake Plant",
+    "Lavender, Mint, Fiddle Leaf Fig",
+    "Spider Plant, Oregano, Jade Plant"
+  ];
+  const [currentSuggestionIndex, setCurrentSuggestionIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSuggestionIndex((prev) => (prev + 1) % searchSuggestions.length);
+    }, 3000); // Change every 3 seconds
+    return () => clearInterval(interval);
+  }, []);
+
   const handleQuickPlantSelect = (plantId: string) => {
     // Check if zone is selected
     if (!selectedZone) {
@@ -141,7 +157,12 @@ export default function Home() {
             {/* Plant Search Form */}
             <div className="bg-card rounded-xl shadow-lg p-8 max-w-4xl mx-auto">
               <div className="space-y-6">
-                <PlantSearch onPlantSelect={handleQuickPlantSelect} />
+                <div>
+                  <PlantSearch onPlantSelect={handleQuickPlantSelect} />
+                  <p className="text-sm text-muted-foreground mt-2 text-center transition-opacity duration-500">
+                    🌿 Try: {searchSuggestions[currentSuggestionIndex]}…
+                  </p>
+                </div>
 
                 {/* Quick Start Options */}
                 <div>
