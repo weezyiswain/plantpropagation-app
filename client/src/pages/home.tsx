@@ -311,47 +311,16 @@ export default function Home() {
       {/* Footer */}
       <footer className="bg-card border-t border-border py-12">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <Sprout className="text-primary-foreground h-5 w-5" />
-                </div>
-                <span className="font-bold text-foreground">PlantProp</span>
+          <div className="flex flex-col items-center justify-center">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <Sprout className="text-primary-foreground h-5 w-5" />
               </div>
-              <p className="text-sm text-muted-foreground mb-4">
-                Smart plant propagation guidance for gardeners of all levels.
-              </p>
+              <span className="font-bold text-foreground">PlantProp</span>
             </div>
-
-            <div>
-              <h5 className="font-semibold text-foreground mb-4">Plant Database</h5>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>Popular Plants</li>
-                <li>Houseplants</li>
-                <li>Succulents</li>
-              </ul>
-            </div>
-
-            <div>
-              <h5 className="font-semibold text-foreground mb-4">Resources</h5>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>Propagation Guide</li>
-                <li>Growing Zones</li>
-                <li>Plant Care Tips</li>
-              </ul>
-            </div>
-
-            <div>
-              <h5 className="font-semibold text-foreground mb-4">Support</h5>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>Help Center</li>
-                <li>About Us</li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-border mt-8 pt-8 text-center">
+            <p className="text-sm text-muted-foreground mb-6 text-center max-w-md">
+              Smart plant propagation guidance for gardeners of all levels.
+            </p>
             <p className="text-sm text-muted-foreground">
               © 2025 PlantProp. All rights reserved. Made with 🌱 for plant lovers.
             </p>
