@@ -19,7 +19,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertPropagationRequestSchema } from "@shared/schema";
@@ -34,9 +33,7 @@ const formSchema = insertPropagationRequestSchema.extend({
   plantId: z.string().min(1, "Plant is required"),
   zone: z.string().min(1, "Growing zone is required"),
   maturity: z.string().min(1, "Plant maturity is required"),
-  soilCondition: z.string().min(1, "Soil condition is required"),
   environment: z.string().min(1, "Environment is required"),
-  experienceLevel: z.string().min(1, "Experience level is required"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -86,10 +83,7 @@ export default function PropagationForm() {
       plantId: plantId || "",
       zone: "",
       maturity: "",
-      soilCondition: "",
       environment: "",
-      preferredMethod: "any",
-      experienceLevel: "",
     },
   });
 
@@ -298,10 +292,9 @@ export default function PropagationForm() {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="indoor">Indoor only</SelectItem>
-                                <SelectItem value="outdoor">Outdoor only</SelectItem>
+                                <SelectItem value="inside">Inside</SelectItem>
+                                <SelectItem value="outside">Outside</SelectItem>
                                 <SelectItem value="greenhouse">Greenhouse</SelectItem>
-                                <SelectItem value="mixed">Indoor/outdoor seasonal</SelectItem>
                               </SelectContent>
                             </Select>
                             <FormMessage />
@@ -348,112 +341,6 @@ export default function PropagationForm() {
                           </FormItem>
                         )}
                       />
-
-                      {/* Soil Conditions */}
-                      <FormField
-                        control={form.control}
-                        name="soilCondition"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Current Soil Conditions</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value || undefined}>
-                              <FormControl>
-                                <SelectTrigger data-testid="select-soil">
-                                  <SelectValue placeholder="Select soil type" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="well-draining">
-                                  Well-draining potting mix
-                                </SelectItem>
-                                <SelectItem value="moisture-retaining">
-                                  Moisture-retaining mix
-                                </SelectItem>
-                                <SelectItem value="sandy">Sandy/succulent mix</SelectItem>
-                                <SelectItem value="clay-heavy">Clay-heavy soil</SelectItem>
-                                <SelectItem value="organic-rich">Organic-rich compost</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-
-                    {/* Additional Options */}
-                    <div className="border-t border-border pt-6">
-                      <h4 className="font-semibold text-foreground mb-4">
-                        Additional Preferences (Optional)
-                      </h4>
-                      <div className="grid md:grid-cols-2 gap-6">
-                        {/* Preferred Method */}
-                        <FormField
-                          control={form.control}
-                          name="preferredMethod"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Preferred Propagation Method</FormLabel>
-                              <FormControl>
-                                <RadioGroup
-                                  onValueChange={field.onChange}
-                                  value={field.value || undefined}
-                                  className="space-y-2"
-                                >
-                                  <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="any" id="any" />
-                                    <label htmlFor="any" className="text-sm cursor-pointer">
-                                      Any method (recommended)
-                                    </label>
-                                  </div>
-                                  <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="cutting" id="cutting" />
-                                    <label htmlFor="cutting" className="text-sm cursor-pointer">
-                                      Stem cuttings only
-                                    </label>
-                                  </div>
-                                  <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="division" id="division" />
-                                    <label htmlFor="division" className="text-sm cursor-pointer">
-                                      Division only
-                                    </label>
-                                  </div>
-                                  <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value="layering" id="layering" />
-                                    <label htmlFor="layering" className="text-sm cursor-pointer">
-                                      Air layering only
-                                    </label>
-                                  </div>
-                                </RadioGroup>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        {/* Experience Level */}
-                        <FormField
-                          control={form.control}
-                          name="experienceLevel"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Experience Level</FormLabel>
-                              <Select onValueChange={field.onChange} value={field.value || undefined}>
-                                <FormControl>
-                                  <SelectTrigger data-testid="select-experience">
-                                    <SelectValue placeholder="Select experience" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="beginner">Beginner</SelectItem>
-                                  <SelectItem value="intermediate">Intermediate</SelectItem>
-                                  <SelectItem value="advanced">Advanced</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
                     </div>
 
                     <div className="flex gap-4">
