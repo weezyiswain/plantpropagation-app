@@ -144,8 +144,39 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 to-accent/10 py-16">
-        <div className="container mx-auto px-4">
+      <section className="relative bg-gradient-to-br from-primary/5 via-accent/5 to-primary/10 py-16 overflow-hidden">
+        {/* Decorative Background Elements */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
+          {/* Top-left leaf decoration */}
+          <svg className="absolute -top-12 -left-12 w-64 h-64 text-primary" viewBox="0 0 200 200" fill="currentColor">
+            <path d="M100,20 Q120,50 140,70 Q150,90 140,110 Q120,130 100,140 Q80,130 60,110 Q50,90 60,70 Q80,50 100,20 Z" />
+            <path d="M100,20 Q90,60 80,90 Q70,110 60,130" stroke="currentColor" strokeWidth="2" fill="none" />
+            <path d="M100,20 Q110,60 120,90 Q130,110 140,130" stroke="currentColor" strokeWidth="2" fill="none" />
+          </svg>
+          
+          {/* Bottom-right leaf decoration */}
+          <svg className="absolute -bottom-16 -right-16 w-80 h-80 text-primary rotate-180" viewBox="0 0 200 200" fill="currentColor">
+            <path d="M100,20 Q120,50 140,70 Q150,90 140,110 Q120,130 100,140 Q80,130 60,110 Q50,90 60,70 Q80,50 100,20 Z" />
+            <path d="M100,20 Q90,60 80,90 Q70,110 60,130" stroke="currentColor" strokeWidth="2" fill="none" />
+            <path d="M100,20 Q110,60 120,90 Q130,110 140,130" stroke="currentColor" strokeWidth="2" fill="none" />
+          </svg>
+
+          {/* Top-right small sprout */}
+          <svg className="absolute top-8 right-24 w-32 h-32 text-primary" viewBox="0 0 100 100" fill="currentColor">
+            <circle cx="50" cy="80" r="8" />
+            <path d="M50,80 Q50,60 60,45 Q65,40 70,45" strokeWidth="3" stroke="currentColor" fill="none" />
+            <path d="M50,80 Q50,65 40,50 Q35,45 30,50" strokeWidth="3" stroke="currentColor" fill="none" />
+          </svg>
+
+          {/* Bottom-left small sprout */}
+          <svg className="absolute bottom-24 left-32 w-40 h-40 text-primary rotate-45" viewBox="0 0 100 100" fill="currentColor">
+            <circle cx="50" cy="80" r="8" />
+            <path d="M50,80 Q50,60 60,45 Q65,40 70,45" strokeWidth="3" stroke="currentColor" fill="none" />
+            <path d="M50,80 Q50,65 40,50 Q35,45 30,50" strokeWidth="3" stroke="currentColor" fill="none" />
+          </svg>
+        </div>
+
+        <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl md:text-5xl text-foreground mb-6">
               <span className="font-bold">Propagate with Confidence:</span>{" "}
