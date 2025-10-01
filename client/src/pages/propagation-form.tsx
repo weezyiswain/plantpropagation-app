@@ -150,10 +150,7 @@ export default function PropagationForm() {
   });
 
   const onSubmit = (values: FormValues) => {
-    createRequestMutation.mutate({
-      ...values,
-      preferredMethod: values.preferredMethod || null,
-    });
+    createRequestMutation.mutate(values);
   };
 
   if (isLoading) {

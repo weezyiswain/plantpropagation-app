@@ -68,7 +68,7 @@ export default function Results() {
   }
 
   const { primary, secondary, zoneInfo, adjustedSuccessRate } = calculatePropagationWindows(plant, request);
-  const recommendedMethod = getRecommendedMethod(plant, request.preferredMethod || undefined);
+  const recommendedMethod = getRecommendedMethod(plant);
   const methodSteps = plant.propagationSteps[recommendedMethod] || [];
 
   return (

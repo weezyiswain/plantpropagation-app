@@ -69,13 +69,9 @@ export function calculatePropagationWindows(
   if (request.maturity === "seedling") successAdjustment -= 10;
   else if (request.maturity === "established") successAdjustment += 5;
   
-  // Environment adjustments (indoor is typically more controlled)
+  // Environment adjustments (greenhouse is typically more controlled)
   if (request.environment === "greenhouse") successAdjustment += 5;
-  else if (request.environment === "outdoor") successAdjustment -= 5;
-  
-  // Experience level adjustments
-  if (request.experienceLevel === "beginner") successAdjustment -= 5;
-  else if (request.experienceLevel === "advanced") successAdjustment += 5;
+  else if (request.environment === "outside") successAdjustment -= 5;
   
   const adjustedSuccessRate = Math.min(100, Math.max(50, plant.successRate + successAdjustment));
   
