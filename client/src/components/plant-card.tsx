@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useLocation } from "wouter";
 import { useState, useEffect } from "react";
 import { Sprout } from "lucide-react";
+import { DifficultyBadge } from "@/components/difficulty-badge";
 
 interface PlantCardProps {
   plant: Plant;
@@ -16,12 +17,6 @@ export function PlantCard({ plant, onPlantSelect }: PlantCardProps) {
   useEffect(() => {
     setImageError(false);
   }, [plant.imageUrl]);
-
-  const difficultyColors = {
-    easy: "bg-primary/10 text-primary",
-    medium: "bg-accent/20 text-accent-foreground",
-    hard: "bg-orange-100 text-orange-800",
-  };
 
   const handleClick = () => {
     if (onPlantSelect) {
@@ -59,13 +54,7 @@ export function PlantCard({ plant, onPlantSelect }: PlantCardProps) {
           <span className="italic">{plant.scientificName}</span>
         </p>
         <div className="flex items-center justify-between text-xs">
-          <span
-            className={`px-2 py-1 rounded-full capitalize ${
-              difficultyColors[plant.difficulty as keyof typeof difficultyColors]
-            }`}
-          >
-            {plant.difficulty}
-          </span>
+          <DifficultyBadge difficulty={plant.difficulty} size="sm" />
           <span className="text-muted-foreground">{plant.successRate}% success</span>
         </div>
       </CardContent>

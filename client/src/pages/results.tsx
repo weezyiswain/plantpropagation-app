@@ -9,6 +9,7 @@ import { Sprout, Calendar, Scissors, Sun, Droplet, Leaf, AlertCircle, ArrowLeft,
 import { calculatePropagationWindows, getRecommendedMethod } from "@/lib/propagation-calculator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AdPlaceholder } from "@/components/ad-placeholder";
+import { DifficultyBadge } from "@/components/difficulty-badge";
 
 export default function Results() {
   const { requestId } = useParams<{ requestId: string }>();
@@ -363,11 +364,9 @@ export default function Results() {
                         <span className="text-muted-foreground">Time to Root:</span>
                         <span className="font-medium text-foreground">{plant.timeToRoot}</span>
                       </div>
-                      <div className="flex justify-between">
+                      <div className="flex justify-between items-center">
                         <span className="text-muted-foreground">Difficulty:</span>
-                        <span className="font-medium text-accent-foreground capitalize">
-                          {plant.difficulty}
-                        </span>
+                        <DifficultyBadge difficulty={plant.difficulty} size="sm" />
                       </div>
                     </div>
                   </CardContent>

@@ -10,6 +10,7 @@ import { autoDetectUSDAZone } from "@/lib/zone-detection";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
+import { DifficultyBadge } from "@/components/difficulty-badge";
 
 const USDA_ZONES = [
   "1a", "1b", "2a", "2b", "3a", "3b", "4a", "4b", "5a", "5b",
@@ -292,11 +293,8 @@ export default function AllPlants() {
                           <span className="italic">{plant.scientificName}</span>
                         </p>
                       </div>
-                      <div className="text-right">
-                        <p className="text-xs text-muted-foreground">Difficulty</p>
-                        <p className="text-sm font-medium capitalize text-foreground">
-                          {plant.difficulty}
-                        </p>
+                      <div className="flex items-center">
+                        <DifficultyBadge difficulty={plant.difficulty} size="md" />
                       </div>
                     </div>
                   </button>
