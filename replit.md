@@ -62,11 +62,12 @@ Preferred communication style: Simple, everyday language.
 - **users table**: User authentication data (username, password)
 
 **Current Implementation:**
-- **Supabase Integration**: Live plant search connected to Supabase PostgreSQL database via DATABASE_URL
-- **Hybrid Storage**: Queries Supabase first for plant data, falls back to in-memory storage
-- Pre-populated with curated plant database (TOP_PLANTS array) for fallback
+- **Supabase-Only Storage**: All plant data exclusively sourced from Supabase PostgreSQL database via DATABASE_URL
+- No hardcoded plant fallbacks - returns empty arrays when database unavailable
 - Interface-based storage abstraction (IStorage) for flexibility
 - Uses node-postgres (pg) adapter with SSL for Supabase pooler compatibility
+- Centralized `slugify()` function for consistent ID generation from plant names (handles apostrophes, special characters)
+- Database contains 30+ curated plants with full propagation details
 
 **Data Models:**
 - JSON fields for complex data (propagation methods, monthly arrays, zone-specific recommendations, step-by-step instructions)
