@@ -140,7 +140,7 @@ export default function Results() {
             
             <Button
               variant="ghost"
-              onClick={() => setLocation("/")}
+              onClick={() => window.history.back()}
               data-testid="button-back-home"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
