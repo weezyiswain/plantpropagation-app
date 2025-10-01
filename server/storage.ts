@@ -58,7 +58,61 @@ export class MemStorage implements IStorage {
   }
   
   async getPlantById(id: string): Promise<Plant | undefined> {
-    return this.plants.get(id);
+    // Check in-memory first
+    const memPlant = this.plants.get(id);
+    if (memPlant) return memPlant;
+    
+    // Try Supabase if DATABASE_URL is configured
+    if (process.env.DATABASE_URL) {
+      try {
+        console.log('[Storage] Attempting Supabase lookup for plant ID:', id);
+        const pool = new Pool({ 
+          connectionString: process.env.DATABASE_URL,
+          ssl: { rejectUnauthorized: false }
+        });
+        const db = drizzle(pool);
+        
+        // Convert ID back to name (e.g., "lavender" -> "Lavender")
+        const searchName = id.split('-').map(word => 
+          word.charAt(0).toUpperCase() + word.slice(1)
+        ).join(' ');
+        
+        const results = await db.execute(
+          sql`SELECT * FROM "plants" WHERE LOWER(name) = LOWER(${searchName}) LIMIT 1`
+        );
+        
+        await pool.end();
+        
+        if (results.rows && results.rows.length > 0) {
+          const row: any = results.rows[0];
+          console.log('[Storage] Found plant in Supabase:', row.name);
+          return {
+            id: row.name.toLowerCase().replace(/\s+/g, '-'),
+            scientificName: row.name,
+            commonName: row.name,
+            imageUrl: null,
+            difficulty: row.difficulty.toLowerCase(),
+            successRate: row.difficulty === 'Easy' ? 90 : row.difficulty === 'Medium' ? 80 : 70,
+            methods: [row.propagation_method],
+            timeToRoot: '2-4 weeks',
+            optimalMonths: [],
+            secondaryMonths: null,
+            zoneRecommendations: { zones: row.zones },
+            propagationSteps: { [row.propagation_method]: [{ step: 1, instruction: row.tips }] },
+            careInstructions: { 
+              light: 'Bright indirect light',
+              watering: 'Regular',
+              fertilizer: 'Monthly',
+              season: row.best_season
+            }
+          } as Plant;
+        }
+      } catch (err) {
+        console.error('[Storage] Database lookup error:', err);
+      }
+    }
+    
+    return undefined;
   }
   
   async searchPlants(query: string): Promise<Plant[]> {
