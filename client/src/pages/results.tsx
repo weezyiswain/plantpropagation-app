@@ -144,28 +144,29 @@ export default function Results() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
-            {/* Back Button */}
-            <div className="mb-6">
-              <Button
-                variant="ghost"
-                onClick={() => window.history.back()}
-                data-testid="button-back-home"
-              >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back
-              </Button>
-            </div>
-
             {/* Results Header */}
-            <div className="text-center mb-12">
-              <div className="inline-flex items-center space-x-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
-                <CheckCircle className="h-4 w-4" />
-                <span>Propagation Guide Generated</span>
+            <div className="mb-12">
+              <div className="text-center mb-4">
+                <div className="inline-flex items-center space-x-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium">
+                  <CheckCircle className="h-4 w-4" />
+                  <span>Propagation Guide Generated</span>
+                </div>
               </div>
-              <h3 className="text-3xl font-bold text-foreground mb-4">
-                {plant.commonName} Propagation Guide
-              </h3>
               
+              <div className="flex items-center mb-4">
+                <Button
+                  variant="ghost"
+                  onClick={() => window.history.back()}
+                  data-testid="button-back-home"
+                  className="flex-shrink-0"
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back
+                </Button>
+                <h3 className="flex-1 text-center text-3xl font-bold text-foreground -ml-20">
+                  {plant.commonName} Propagation Guide
+                </h3>
+              </div>
               {/* Zone Selector */}
               <div className="flex items-center justify-center space-x-2 text-muted-foreground">
                 <MapPin className="h-4 w-4 text-muted-foreground" />
