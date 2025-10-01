@@ -135,7 +135,7 @@ export default function Home() {
               Propagate with Confidence: Personalized Guides for 100+ Plants
             </h2>
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Get personalized propagation windows and detailed guides based on your plant type, growing zone, and local conditions. Browse our database of {plants.length}+ plants with step-by-step instructions.
+              Step-by-step propagation guides for 100+ plants.
             </p>
 
             {/* Plant Search Form */}
