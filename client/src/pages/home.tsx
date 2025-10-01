@@ -202,7 +202,12 @@ export default function Home() {
             {/* Plant Search Form */}
             <div className="bg-card rounded-xl shadow-lg p-8">
               <div className="space-y-6">
-                <PlantSearch onPlantSelect={handleQuickPlantSelect} />
+                <div>
+                  <PlantSearch onPlantSelect={handleQuickPlantSelect} />
+                  <p className="text-sm text-muted-foreground mt-2 transition-opacity duration-500">
+                    🌿 Try: {searchSuggestions[currentSuggestionIndex]}…
+                  </p>
+                </div>
 
                 {/* Quick Start Options */}
                 <div>
@@ -238,11 +243,6 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            
-            {/* Helper text below card */}
-            <p className="text-sm text-muted-foreground mt-3 text-left transition-opacity duration-500">
-              🌿 Try: {searchSuggestions[currentSuggestionIndex]}…
-            </p>
           </div>
         </div>
       </section>
