@@ -1,19 +1,30 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { useParams, useLocation, Link } from "wouter";
-import { PropagationRequest, Plant } from "@shared/schema";
+import { PropagationRequest, Plant, InsertPropagationRequest } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Sprout, Calendar, Scissors, Sun, Droplet, Leaf, AlertCircle, ArrowLeft, CheckCircle } from "lucide-react";
+import { Sprout, Calendar, Scissors, Sun, Droplet, Leaf, AlertCircle, ArrowLeft, CheckCircle, MapPin } from "lucide-react";
 import { calculatePropagationWindows, getRecommendedMethod } from "@/lib/propagation-calculator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AdPlaceholder } from "@/components/ad-placeholder";
 import { DifficultyBadge } from "@/components/difficulty-badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useState, useEffect } from "react";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+
+const USDA_ZONES = [
+  "1a", "1b", "2a", "2b", "3a", "3b", "4a", "4b", "5a", "5b",
+  "6a", "6b", "7a", "7b", "8a", "8b", "9a", "9b", "10a", "10b",
+  "11a", "11b", "12a", "12b", "13a", "13b"
+];
 
 export default function Results() {
   const { requestId } = useParams<{ requestId: string }>();
   const [, setLocation] = useLocation();
+  const { toast } = useToast();
 
   const { data: request, isLoading: requestLoading } = useQuery<PropagationRequest>({
     queryKey: ["/api/propagation-requests", requestId],
@@ -24,6 +35,44 @@ export default function Results() {
     queryKey: ["/api/plants", request?.plantId],
     enabled: !!request?.plantId,
   });
+
+  const [selectedZone, setSelectedZone] = useState<string>(request?.zone || "");
+
+  useEffect(() => {
+    if (request?.zone) {
+      setSelectedZone(request.zone);
+    }
+  }, [request?.zone]);
+
+  const changeZoneMutation = useMutation({
+    mutationFn: async (newZone: string) => {
+      if (!request || !plant) return;
+      const data: InsertPropagationRequest = {
+        plantId: request.plantId,
+        zone: newZone,
+        maturity: request.maturity,
+        environment: request.environment,
+      };
+      const res = await apiRequest("POST", "/api/propagation-requests", data);
+      return res.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/propagation-requests"] });
+      setLocation(`/results/${data.id}`);
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to change zone",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleZoneChange = (zone: string) => {
+    setSelectedZone(zone);
+    changeZoneMutation.mutate(zone);
+  };
 
   const isLoading = requestLoading || plantLoading;
 
@@ -88,14 +137,34 @@ export default function Results() {
                 <p className="text-xs text-muted-foreground">Smart Propagation Guide</p>
               </div>
             </Link>
-            <Button
-              variant="ghost"
-              onClick={() => setLocation("/")}
-              data-testid="button-back-home"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back
-            </Button>
+            
+            <div className="flex items-center space-x-4">
+              {/* Zone Selector */}
+              <div className="flex items-center space-x-2">
+                <MapPin className="h-4 w-4 text-muted-foreground" />
+                <Select value={selectedZone} onValueChange={handleZoneChange}>
+                  <SelectTrigger className="w-[120px]" data-testid="select-zone-header">
+                    <SelectValue placeholder="Select zone" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {USDA_ZONES.map((zone) => (
+                      <SelectItem key={zone} value={zone} data-testid={`zone-option-${zone}`}>
+                        Zone {zone}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <Button
+                variant="ghost"
+                onClick={() => setLocation("/")}
+                data-testid="button-back-home"
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back
+              </Button>
+            </div>
           </div>
         </div>
       </header>
