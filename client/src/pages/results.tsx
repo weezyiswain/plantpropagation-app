@@ -3,6 +3,7 @@ import { useParams, useLocation } from "wouter";
 import { PropagationRequest, Plant } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Sprout, Calendar, Scissors, Sun, Droplet, Leaf, AlertCircle, ArrowLeft, CheckCircle } from "lucide-react";
 import { calculatePropagationWindows, getRecommendedMethod } from "@/lib/propagation-calculator";
@@ -134,57 +135,126 @@ export default function Results() {
                       </h4>
                     </div>
 
-                    <div className="space-y-6">
-                      {methodSteps.map((stepData: any, index: number) => (
-                        <div key={index} className="flex space-x-4">
-                          <div className="flex-shrink-0 w-8 h-8 step-number rounded-full flex items-center justify-center text-primary-foreground font-semibold text-sm">
-                            {stepData.step}
-                          </div>
-                          <div className="flex-1">
-                            <h5 className="font-semibold text-foreground mb-2">
-                              {stepData.title}
-                            </h5>
-                            <p className="text-muted-foreground text-sm mb-3">
-                              {stepData.description}
-                            </p>
-                            {stepData.tip && (
-                              <div className="bg-muted/30 rounded-lg p-3">
-                                <p className="text-xs text-muted-foreground">
-                                  <strong>Pro Tip:</strong> {stepData.tip}
-                                </p>
-                              </div>
-                            )}
-                            {stepData.options && stepData.options.length > 0 && (
-                              <div className="grid grid-cols-2 gap-3 mt-3">
-                                {stepData.options.map((option: any, optIdx: number) => (
-                                  <div key={optIdx} className="bg-muted/30 rounded-lg p-3">
-                                    <h6 className="font-medium text-foreground text-sm mb-1">
-                                      {option.method}
-                                    </h6>
-                                    <p className="text-xs text-muted-foreground">
-                                      {option.details}
-                                    </p>
+                    {plant.methods.length > 1 ? (
+                      <Tabs defaultValue={recommendedMethod}>
+                        <TabsList>
+                          {plant.methods.map((method) => (
+                            <TabsTrigger key={method} value={method} className="capitalize">
+                              {method.replace("-", " ")}
+                            </TabsTrigger>
+                          ))}
+                        </TabsList>
+
+                        {plant.methods.map((method) => {
+                          const steps = plant.propagationSteps[method] || [];
+                          return (
+                            <TabsContent key={method} value={method} className="space-y-6 mt-6">
+                              {steps.map((stepData: any, index: number) => (
+                                <div key={index} className="flex space-x-4">
+                                  <div className="flex-shrink-0 w-8 h-8 step-number rounded-full flex items-center justify-center text-primary-foreground font-semibold text-sm">
+                                    {stepData.step}
                                   </div>
-                                ))}
-                              </div>
-                            )}
-                            {stepData.requirements && stepData.requirements.length > 0 && (
-                              <div className="flex flex-wrap gap-4 mt-3 text-sm">
-                                {stepData.requirements.map((req: string, reqIdx: number) => (
-                                  <span
-                                    key={reqIdx}
-                                    className="flex items-center text-muted-foreground"
-                                  >
-                                    <CheckCircle className="text-primary h-4 w-4 mr-2" />
-                                    {req}
-                                  </span>
-                                ))}
-                              </div>
-                            )}
+                                  <div className="flex-1">
+                                    <h5 className="font-semibold text-foreground mb-2">
+                                      {stepData.title}
+                                    </h5>
+                                    <p className="text-muted-foreground text-sm mb-3">
+                                      {stepData.description}
+                                    </p>
+                                    {stepData.tip && (
+                                      <div className="bg-muted/30 rounded-lg p-3">
+                                        <p className="text-xs text-muted-foreground">
+                                          <strong>Pro Tip:</strong> {stepData.tip}
+                                        </p>
+                                      </div>
+                                    )}
+                                    {stepData.options && stepData.options.length > 0 && (
+                                      <div className="grid grid-cols-2 gap-3 mt-3">
+                                        {stepData.options.map((option: any, optIdx: number) => (
+                                          <div key={optIdx} className="bg-muted/30 rounded-lg p-3">
+                                            <h6 className="font-medium text-foreground text-sm mb-1">
+                                              {option.method}
+                                            </h6>
+                                            <p className="text-xs text-muted-foreground">
+                                              {option.details}
+                                            </p>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    )}
+                                    {stepData.requirements && stepData.requirements.length > 0 && (
+                                      <div className="flex flex-wrap gap-4 mt-3 text-sm">
+                                        {stepData.requirements.map((req: string, reqIdx: number) => (
+                                          <span
+                                            key={reqIdx}
+                                            className="flex items-center text-muted-foreground"
+                                          >
+                                            <CheckCircle className="text-primary h-4 w-4 mr-2" />
+                                            {req}
+                                          </span>
+                                        ))}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </TabsContent>
+                          );
+                        })}
+                      </Tabs>
+                    ) : (
+                      <div className="space-y-6">
+                        {methodSteps.map((stepData: any, index: number) => (
+                          <div key={index} className="flex space-x-4">
+                            <div className="flex-shrink-0 w-8 h-8 step-number rounded-full flex items-center justify-center text-primary-foreground font-semibold text-sm">
+                              {stepData.step}
+                            </div>
+                            <div className="flex-1">
+                              <h5 className="font-semibold text-foreground mb-2">
+                                {stepData.title}
+                              </h5>
+                              <p className="text-muted-foreground text-sm mb-3">
+                                {stepData.description}
+                              </p>
+                              {stepData.tip && (
+                                <div className="bg-muted/30 rounded-lg p-3">
+                                  <p className="text-xs text-muted-foreground">
+                                    <strong>Pro Tip:</strong> {stepData.tip}
+                                  </p>
+                                </div>
+                              )}
+                              {stepData.options && stepData.options.length > 0 && (
+                                <div className="grid grid-cols-2 gap-3 mt-3">
+                                  {stepData.options.map((option: any, optIdx: number) => (
+                                    <div key={optIdx} className="bg-muted/30 rounded-lg p-3">
+                                      <h6 className="font-medium text-foreground text-sm mb-1">
+                                        {option.method}
+                                      </h6>
+                                      <p className="text-xs text-muted-foreground">
+                                        {option.details}
+                                      </p>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                              {stepData.requirements && stepData.requirements.length > 0 && (
+                                <div className="flex flex-wrap gap-4 mt-3 text-sm">
+                                  {stepData.requirements.map((req: string, reqIdx: number) => (
+                                    <span
+                                      key={reqIdx}
+                                      className="flex items-center text-muted-foreground"
+                                    >
+                                      <CheckCircle className="text-primary h-4 w-4 mr-2" />
+                                      {req}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
 
