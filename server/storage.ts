@@ -167,7 +167,8 @@ export class MemStorage implements IStorage {
       
       const results = await db.execute(
         sql`SELECT * FROM "plants" 
-        WHERE common_name ILIKE ${`%${query}%`} 
+        WHERE name ILIKE ${`%${query}%`}
+        OR common_name ILIKE ${`%${query}%`} 
         OR scientific_name ILIKE ${`%${query}%`}
         LIMIT 20`
       );
