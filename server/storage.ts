@@ -1,6 +1,5 @@
 import { type User, type InsertUser, type Plant, type PropagationRequest, type InsertPropagationRequest } from "@shared/schema";
 import { randomUUID } from "crypto";
-import { TOP_PLANTS } from "../client/src/lib/plant-data";
 import { Pool } from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { sql } from "drizzle-orm";
@@ -20,20 +19,56 @@ export interface IStorage {
   getPropagationRequest(id: string): Promise<PropagationRequest | undefined>;
 }
 
+// Helper function to create database connection
+function createDBConnection() {
+  return new Pool({ 
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+  });
+}
+
+// Helper function to create consistent slug from plant name
+function slugify(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')  // Replace non-alphanumeric with hyphen
+    .replace(/^-+|-+$/g, '');      // Remove leading/trailing hyphens
+}
+
+// Helper function to map database row to Plant type
+function mapRowToPlant(row: any): Plant {
+  // Generate consistent ID from common_name
+  const id = slugify(row.common_name);
+  
+  return {
+    id,
+    scientificName: row.scientific_name || row.common_name,
+    commonName: row.common_name,
+    imageUrl: row.image_url || null,
+    difficulty: row.difficulty?.toLowerCase() || 'medium',
+    successRate: row.success_rate || 80,
+    methods: Array.isArray(row.methods) ? row.methods : ['stem-cutting'],
+    timeToRoot: row.time_to_root || '2-4 weeks',
+    optimalMonths: Array.isArray(row.optimal_months) ? row.optimal_months : [],
+    secondaryMonths: Array.isArray(row.secondary_months) ? row.secondary_months : null,
+    zoneRecommendations: row.zone_recommendations || { all: 'Suitable for most zones' },
+    propagationSteps: row.propagation_steps || {},
+    careInstructions: row.care_instructions || {
+      light: 'Bright indirect light',
+      watering: 'Keep soil moderately moist',
+      fertilizer: 'Feed monthly during growing season',
+      humidity: 'Average household humidity'
+    }
+  };
+}
+
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
-  private plants: Map<string, Plant>;
   private propagationRequests: Map<string, PropagationRequest>;
 
   constructor() {
     this.users = new Map();
-    this.plants = new Map();
     this.propagationRequests = new Map();
-    
-    // Initialize with top 100 plants (currently 6, but structured for expansion)
-    TOP_PLANTS.forEach(plant => {
-      this.plants.set(plant.id, plant);
-    });
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -54,186 +89,102 @@ export class MemStorage implements IStorage {
   }
   
   async getAllPlants(): Promise<Plant[]> {
-    const inMemoryPlants = Array.from(this.plants.values());
-    
-    // Try Supabase/Postgres first if DATABASE_URL is configured
-    if (process.env.DATABASE_URL) {
-      try {
-        console.log('[Storage] Fetching all plants from Supabase...');
-        const pool = new Pool({ 
-          connectionString: process.env.DATABASE_URL,
-          ssl: { rejectUnauthorized: false }
-        });
-        const db = drizzle(pool);
-        
-        const results = await db.execute(
-          sql`SELECT * FROM "plants" ORDER BY name`
-        );
-        
-        await pool.end();
-        
-        console.log('[Storage] Supabase returned', results.rows?.length || 0, 'plants');
-        
-        if (results.rows && results.rows.length > 0) {
-          // Map database rows to Plant schema
-          const supabasePlants = results.rows.map((row: any) => ({
-            id: row.name.toLowerCase().replace(/\s+/g, '-'),
-            scientificName: row.name,
-            commonName: row.name,
-            imageUrl: null,
-            difficulty: row.difficulty.toLowerCase(),
-            successRate: row.difficulty === 'Easy' ? 90 : row.difficulty === 'Medium' ? 80 : 70,
-            methods: [row.propagation_method],
-            timeToRoot: '2-4 weeks',
-            optimalMonths: [],
-            secondaryMonths: null,
-            zoneRecommendations: { zones: row.zones },
-            propagationSteps: { [row.propagation_method]: [{ step: 1, instruction: row.tips }] },
-            careInstructions: { 
-              light: 'Bright indirect light',
-              watering: 'Regular',
-              fertilizer: 'Monthly',
-              season: row.best_season
-            }
-          } as Plant));
-          
-          // Merge with in-memory plants, with in-memory taking priority (better data)
-          const plantsMap = new Map<string, Plant>();
-          
-          // Add Supabase plants first
-          supabasePlants.forEach(plant => plantsMap.set(plant.id, plant));
-          
-          // Override with in-memory plants (they have detailed propagation steps)
-          inMemoryPlants.forEach(plant => plantsMap.set(plant.id, plant));
-          
-          const mergedPlants = Array.from(plantsMap.values());
-          console.log('[Storage] Returning', mergedPlants.length, 'plants (merged from Supabase + in-memory)');
-          return mergedPlants;
-        }
-      } catch (err) {
-        console.error('[Storage] Database query error:', err);
-      }
+    if (!process.env.DATABASE_URL) {
+      console.error('[Storage] DATABASE_URL not configured');
+      return [];
     }
-    
-    // Fallback to in-memory plants only
-    console.log('[Storage] Using in-memory plants only');
-    return inMemoryPlants;
+
+    try {
+      console.log('[Storage] Fetching all plants from Supabase...');
+      const pool = createDBConnection();
+      const db = drizzle(pool);
+      
+      const results = await db.execute(
+        sql`SELECT * FROM "plants" ORDER BY common_name`
+      );
+      
+      await pool.end();
+      
+      console.log('[Storage] Supabase returned', results.rows?.length || 0, 'plants');
+      
+      if (results.rows && results.rows.length > 0) {
+        const plants = results.rows.map(mapRowToPlant);
+        return plants;
+      }
+      
+      console.log('[Storage] No plants found in database');
+      return [];
+    } catch (err) {
+      console.error('[Storage] Database query error:', err);
+      return [];
+    }
   }
   
   async getPlantById(id: string): Promise<Plant | undefined> {
-    // Check in-memory first
-    const memPlant = this.plants.get(id);
-    if (memPlant) return memPlant;
-    
-    // Try Supabase if DATABASE_URL is configured
-    if (process.env.DATABASE_URL) {
-      try {
-        console.log('[Storage] Attempting Supabase lookup for plant ID:', id);
-        const pool = new Pool({ 
-          connectionString: process.env.DATABASE_URL,
-          ssl: { rejectUnauthorized: false }
-        });
-        const db = drizzle(pool);
-        
-        // Convert ID back to name (e.g., "lavender" -> "Lavender")
-        const searchName = id.split('-').map(word => 
-          word.charAt(0).toUpperCase() + word.slice(1)
-        ).join(' ');
-        
-        const results = await db.execute(
-          sql`SELECT * FROM "plants" WHERE LOWER(name) = LOWER(${searchName}) LIMIT 1`
-        );
-        
-        await pool.end();
-        
-        if (results.rows && results.rows.length > 0) {
-          const row: any = results.rows[0];
-          console.log('[Storage] Found plant in Supabase:', row.name);
-          return {
-            id: row.name.toLowerCase().replace(/\s+/g, '-'),
-            scientificName: row.name,
-            commonName: row.name,
-            imageUrl: null,
-            difficulty: row.difficulty.toLowerCase(),
-            successRate: row.difficulty === 'Easy' ? 90 : row.difficulty === 'Medium' ? 80 : 70,
-            methods: [row.propagation_method],
-            timeToRoot: '2-4 weeks',
-            optimalMonths: [],
-            secondaryMonths: null,
-            zoneRecommendations: { zones: row.zones },
-            propagationSteps: { [row.propagation_method]: [{ step: 1, instruction: row.tips }] },
-            careInstructions: { 
-              light: 'Bright indirect light',
-              watering: 'Regular',
-              fertilizer: 'Monthly',
-              season: row.best_season
-            }
-          } as Plant;
-        }
-      } catch (err) {
-        console.error('[Storage] Database lookup error:', err);
-      }
+    if (!process.env.DATABASE_URL) {
+      console.error('[Storage] DATABASE_URL not configured');
+      return undefined;
     }
-    
-    return undefined;
+
+    try {
+      console.log('[Storage] Looking up plant by ID:', id);
+      const pool = createDBConnection();
+      const db = drizzle(pool);
+      
+      // Use consistent slugification: convert common_name to slug in SQL and compare
+      const results = await db.execute(
+        sql`SELECT * FROM "plants" 
+        WHERE LOWER(REGEXP_REPLACE(common_name, '[^a-zA-Z0-9]+', '-', 'g')) = LOWER(${id})
+        OR LOWER(REGEXP_REPLACE(REGEXP_REPLACE(common_name, '[^a-zA-Z0-9]+', '-', 'g'), '^-+|-+$', '', 'g')) = LOWER(${id})
+        LIMIT 1`
+      );
+      
+      await pool.end();
+      
+      if (results.rows && results.rows.length > 0) {
+        console.log('[Storage] Found plant:', results.rows[0].common_name);
+        return mapRowToPlant(results.rows[0]);
+      }
+      
+      console.log('[Storage] Plant not found');
+      return undefined;
+    } catch (err) {
+      console.error('[Storage] Database lookup error:', err);
+      return undefined;
+    }
   }
   
   async searchPlants(query: string): Promise<Plant[]> {
-    // Try Supabase/Postgres first if DATABASE_URL is configured
-    if (process.env.DATABASE_URL) {
-      try {
-        console.log('[Storage] Attempting Supabase search for:', query);
-        const pool = new Pool({ 
-          connectionString: process.env.DATABASE_URL,
-          ssl: { rejectUnauthorized: false }
-        });
-        const db = drizzle(pool);
-        
-        const results = await db.execute(
-          sql`SELECT * FROM "plants" WHERE name ILIKE ${`%${query}%`} LIMIT 10`
-        );
-        
-        await pool.end(); // Close the pool after query
-        
-        console.log('[Storage] Supabase returned', results.rows?.length || 0, 'rows');
-        
-        if (results.rows && results.rows.length > 0) {
-          // Map database rows to Plant schema
-          const mapped = results.rows.map((row: any) => ({
-            id: row.name.toLowerCase().replace(/\s+/g, '-'),
-            scientificName: row.name,
-            commonName: row.name,
-            imageUrl: null,
-            difficulty: row.difficulty.toLowerCase(),
-            successRate: row.difficulty === 'Easy' ? 90 : row.difficulty === 'Medium' ? 80 : 70,
-            methods: [row.propagation_method],
-            timeToRoot: '2-4 weeks',
-            optimalMonths: [],
-            secondaryMonths: null,
-            zoneRecommendations: { zones: row.zones },
-            propagationSteps: { [row.propagation_method]: [{ step: 1, instruction: row.tips }] },
-            careInstructions: { 
-              light: 'Bright indirect light',
-              watering: 'Regular',
-              fertilizer: 'Monthly',
-              season: row.best_season
-            }
-          } as Plant));
-          console.log('[Storage] Returning Supabase results');
-          return mapped;
-        }
-      } catch (err) {
-        console.error('[Storage] Database search error:', err);
-      }
+    if (!process.env.DATABASE_URL) {
+      console.error('[Storage] DATABASE_URL not configured');
+      return [];
     }
-    
-    // Fallback to in-memory search
-    console.log('[Storage] Using in-memory fallback search');
-    const lowercaseQuery = query.toLowerCase();
-    return Array.from(this.plants.values()).filter(plant => 
-      plant.commonName.toLowerCase().includes(lowercaseQuery) ||
-      plant.scientificName.toLowerCase().includes(lowercaseQuery)
-    );
+
+    try {
+      console.log('[Storage] Searching plants for:', query);
+      const pool = createDBConnection();
+      const db = drizzle(pool);
+      
+      const results = await db.execute(
+        sql`SELECT * FROM "plants" 
+        WHERE common_name ILIKE ${`%${query}%`} 
+        OR scientific_name ILIKE ${`%${query}%`}
+        LIMIT 20`
+      );
+      
+      await pool.end();
+      
+      console.log('[Storage] Search returned', results.rows?.length || 0, 'results');
+      
+      if (results.rows && results.rows.length > 0) {
+        return results.rows.map(mapRowToPlant);
+      }
+      
+      return [];
+    } catch (err) {
+      console.error('[Storage] Database search error:', err);
+      return [];
+    }
   }
   
   async createPropagationRequest(insertRequest: InsertPropagationRequest): Promise<PropagationRequest> {
