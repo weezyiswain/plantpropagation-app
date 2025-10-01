@@ -102,9 +102,9 @@ export default function AllPlants() {
           return (difficultyOrder[b.difficulty?.toLowerCase() || 'medium'] || 2) - 
                  (difficultyOrder[a.difficulty?.toLowerCase() || 'medium'] || 2);
         case 'success-asc':
-          return (a.indoorSuccessRate || 0) - (b.indoorSuccessRate || 0);
+          return (a.successRate || 0) - (b.successRate || 0);
         case 'success-desc':
-          return (b.indoorSuccessRate || 0) - (a.indoorSuccessRate || 0);
+          return (b.successRate || 0) - (a.successRate || 0);
         default:
           return 0;
       }

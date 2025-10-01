@@ -37,8 +37,8 @@ function slugify(name: string): string {
 
 // Helper function to map database row to Plant type
 function mapRowToPlant(row: any): Plant {
-  // Generate consistent ID from common_name
-  const id = slugify(row.common_name);
+  // Use database primary key as ID for guaranteed uniqueness
+  const id = String(row.id);
   
   return {
     id,
@@ -95,16 +95,15 @@ export class MemStorage implements IStorage {
       return [];
     }
 
+    const pool = createDBConnection();
+    
     try {
       console.log('[Storage] Fetching all plants from Supabase...');
-      const pool = createDBConnection();
       const db = drizzle(pool);
       
       const results = await db.execute(
         sql`SELECT * FROM "plants" ORDER BY common_name`
       );
-      
-      await pool.end();
       
       console.log('[Storage] Supabase returned', results.rows?.length || 0, 'plants');
       
@@ -118,6 +117,8 @@ export class MemStorage implements IStorage {
     } catch (err) {
       console.error('[Storage] Database query error:', err);
       return [];
+    } finally {
+      await pool.end();
     }
   }
   
@@ -127,20 +128,23 @@ export class MemStorage implements IStorage {
       return undefined;
     }
 
+    const pool = createDBConnection();
+    
     try {
       console.log('[Storage] Looking up plant by ID:', id);
-      const pool = createDBConnection();
       const db = drizzle(pool);
       
-      // Use consistent slugification: convert common_name to slug in SQL and compare
-      const results = await db.execute(
-        sql`SELECT * FROM "plants" 
-        WHERE LOWER(REGEXP_REPLACE(common_name, '[^a-zA-Z0-9]+', '-', 'g')) = LOWER(${id})
-        OR LOWER(REGEXP_REPLACE(REGEXP_REPLACE(common_name, '[^a-zA-Z0-9]+', '-', 'g'), '^-+|-+$', '', 'g')) = LOWER(${id})
-        LIMIT 1`
-      );
+      // Convert string ID to integer and look up by primary key
+      const numericId = parseInt(id, 10);
       
-      await pool.end();
+      if (isNaN(numericId)) {
+        console.log('[Storage] Invalid numeric ID:', id);
+        return undefined;
+      }
+      
+      const results = await db.execute(
+        sql`SELECT * FROM "plants" WHERE id = ${numericId} LIMIT 1`
+      );
       
       if (results.rows && results.rows.length > 0) {
         console.log('[Storage] Found plant:', results.rows[0].common_name);
@@ -152,6 +156,8 @@ export class MemStorage implements IStorage {
     } catch (err) {
       console.error('[Storage] Database lookup error:', err);
       return undefined;
+    } finally {
+      await pool.end();
     }
   }
   
