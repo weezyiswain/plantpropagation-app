@@ -138,33 +138,14 @@ export default function Results() {
               </div>
             </Link>
             
-            <div className="flex items-center space-x-4">
-              {/* Zone Selector */}
-              <div className="flex items-center space-x-2">
-                <MapPin className="h-4 w-4 text-muted-foreground" />
-                <Select value={selectedZone} onValueChange={handleZoneChange}>
-                  <SelectTrigger className="w-[120px]" data-testid="select-zone-header">
-                    <SelectValue placeholder="Select zone" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {USDA_ZONES.map((zone) => (
-                      <SelectItem key={zone} value={zone} data-testid={`zone-option-${zone}`}>
-                        Zone {zone}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <Button
-                variant="ghost"
-                onClick={() => setLocation("/")}
-                data-testid="button-back-home"
-              >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back
-              </Button>
-            </div>
+            <Button
+              variant="ghost"
+              onClick={() => setLocation("/")}
+              data-testid="button-back-home"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Back
+            </Button>
           </div>
         </div>
       </header>
@@ -181,6 +162,24 @@ export default function Results() {
               <h3 className="text-3xl font-bold text-foreground mb-4">
                 {plant.commonName} Propagation Guide
               </h3>
+              
+              {/* Zone Selector */}
+              <div className="flex items-center justify-center space-x-2 mb-3">
+                <MapPin className="h-4 w-4 text-muted-foreground" />
+                <Select value={selectedZone} onValueChange={handleZoneChange}>
+                  <SelectTrigger className="w-[120px]" data-testid="select-zone-header">
+                    <SelectValue placeholder="Select zone" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {USDA_ZONES.map((zone) => (
+                      <SelectItem key={zone} value={zone} data-testid={`zone-option-${zone}`}>
+                        Zone {zone}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
               <p className="text-muted-foreground">
                 Customized for Zone {request.zone} • {request.maturity} plant • {request.environment} environment
               </p>
