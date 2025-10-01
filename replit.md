@@ -162,3 +162,16 @@ Preferred communication style: Simple, everyday language.
 - All ad slots have unique identifiers (data-ad-slot, data-testid) for easy integration with ad networks
 - Fixed dimensions prevent layout shifts and maintain consistent user experience
 - Ready for Google AdSense, Mediavine, or custom ad network integration
+
+**Logo Navigation:**
+- Logo (PlantProp icon + name + subtitle) is clickable from all pages to return to homepage
+- Implemented consistently across Home, All Plants, Results, and Propagation Form pages
+- Uses wouter Link component with href="/" and data-testid="link-home-logo"
+- Hover effect (opacity-80) provides visual feedback for clickable state
+
+**Temporary Image Handling (October 2025):**
+- **Plant images temporarily hidden** via code comments (not deleted) for launch troubleshooting
+- PlantCard component displays green gradient fallback with Sprout icon for all plants
+- Propagation form page image display also commented out
+- Image code preserved with "uncomment when ready to troubleshoot" markers
+- Fallback icons maintain visual consistency and layout during image debugging phase
