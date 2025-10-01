@@ -16,56 +16,80 @@ interface HardinessZoneData {
   };
 }
 
-export async function detectUserLocation(): Promise<LocationData | null> {
+export async function detectUserLocation(retryCount = 0): Promise<LocationData | null> {
   try {
-    const response = await fetch('http://ip-api.com/json/', {
+    const response = await fetch('https://ipapi.co/json/', {
       method: 'GET',
     });
     
     if (!response.ok) {
-      console.error('Failed to detect location');
+      console.error(`[Zone Detection] Failed to detect location, status: ${response.status}`);
+      
+      // Retry once on failure
+      if (retryCount === 0) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        return detectUserLocation(1);
+      }
       return null;
     }
     
     const data = await response.json();
     
     return {
-      zip: data.zip,
+      zip: data.postal,
       city: data.city,
-      region: data.regionName,
-      country: data.country,
-      lat: data.lat,
-      lon: data.lon,
+      region: data.region,
+      country: data.country_name,
+      lat: data.latitude,
+      lon: data.longitude,
     };
   } catch (error) {
-    console.error('Error detecting location:', error);
+    console.error('[Zone Detection] Error detecting location:', error);
+    
+    // Retry once on network error
+    if (retryCount === 0) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return detectUserLocation(1);
+    }
     return null;
   }
 }
 
-export async function getHardinessZoneByZip(zipCode: string): Promise<string | null> {
+export async function getHardinessZoneByZip(zipCode: string, retryCount = 0): Promise<string | null> {
   try {
     const response = await fetch(`https://phzmapi.org/${zipCode}.json`, {
       method: 'GET',
     });
     
     if (!response.ok) {
-      console.error(`Failed to get hardiness zone for ZIP ${zipCode}`);
+      console.error(`[Zone Detection] Failed to get hardiness zone for ZIP ${zipCode}, status: ${response.status}`);
+      
+      // Retry once on failure
+      if (retryCount === 0) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        return getHardinessZoneByZip(zipCode, 1);
+      }
       return null;
     }
     
     const data: HardinessZoneData = await response.json();
     
-    // Return just the zone number (e.g., "6a" -> "6")
-    // or the full zone if it matches our format
+    // Return the full zone string (e.g., "6a") - phzmapi returns it correctly
     if (data.zone) {
-      const zoneMatch = data.zone.match(/^(\d+)[ab]?$/i);
-      return zoneMatch ? zoneMatch[1] : data.zone;
+      const cleanZone = data.zone.toLowerCase().trim();
+      console.log('[Zone Detection] Hardiness zone from API:', cleanZone);
+      return cleanZone;
     }
     
     return null;
   } catch (error) {
-    console.error('Error getting hardiness zone:', error);
+    console.error('[Zone Detection] Error getting hardiness zone:', error);
+    
+    // Retry once on network error
+    if (retryCount === 0) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return getHardinessZoneByZip(zipCode, 1);
+    }
     return null;
   }
 }
@@ -84,8 +108,9 @@ export async function autoDetectUSDAZone(): Promise<string | null> {
     
     console.log('[Zone Detection] Location detected:', location.city, location.region, location.zip);
     
-    // Step 2: If we have a ZIP code, get hardiness zone
-    if (location.zip && location.country === 'United States') {
+    // Step 2: If we have a ZIP code (5 digits), attempt zone lookup
+    // Don't strictly require US country name - territories and edge cases may vary
+    if (location.zip && /^\d{5}$/.test(location.zip)) {
       const zone = await getHardinessZoneByZip(location.zip);
       
       if (zone) {
@@ -94,7 +119,7 @@ export async function autoDetectUSDAZone(): Promise<string | null> {
       }
     }
     
-    console.log('[Zone Detection] Could not determine hardiness zone (non-US location or ZIP unavailable)');
+    console.log('[Zone Detection] Could not determine hardiness zone (no valid ZIP code found)');
     return null;
   } catch (error) {
     console.error('[Zone Detection] Error in auto-detection:', error);

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useParams, useLocation } from "wouter";
 import { Plant, InsertPropagationRequest } from "@shared/schema";
@@ -27,6 +28,7 @@ import { Sprout, ArrowLeft, Info, ExternalLink } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
+import { autoDetectUSDAZone } from "@/lib/zone-detection";
 
 const formSchema = insertPropagationRequestSchema.extend({
   plantId: z.string().min(1, "Plant is required"),
@@ -38,6 +40,35 @@ const formSchema = insertPropagationRequestSchema.extend({
 });
 
 type FormValues = z.infer<typeof formSchema>;
+
+const zones = [
+  { value: "1a", label: "Zone 1a (-60°F to -55°F)" },
+  { value: "1b", label: "Zone 1b (-55°F to -50°F)" },
+  { value: "2a", label: "Zone 2a (-50°F to -45°F)" },
+  { value: "2b", label: "Zone 2b (-45°F to -40°F)" },
+  { value: "3a", label: "Zone 3a (-40°F to -35°F)" },
+  { value: "3b", label: "Zone 3b (-35°F to -30°F)" },
+  { value: "4a", label: "Zone 4a (-30°F to -25°F)" },
+  { value: "4b", label: "Zone 4b (-25°F to -20°F)" },
+  { value: "5a", label: "Zone 5a (-20°F to -15°F)" },
+  { value: "5b", label: "Zone 5b (-15°F to -10°F)" },
+  { value: "6a", label: "Zone 6a (-10°F to -5°F)" },
+  { value: "6b", label: "Zone 6b (-5°F to 0°F)" },
+  { value: "7a", label: "Zone 7a (0°F to 5°F)" },
+  { value: "7b", label: "Zone 7b (5°F to 10°F)" },
+  { value: "8a", label: "Zone 8a (10°F to 15°F)" },
+  { value: "8b", label: "Zone 8b (15°F to 20°F)" },
+  { value: "9a", label: "Zone 9a (20°F to 25°F)" },
+  { value: "9b", label: "Zone 9b (25°F to 30°F)" },
+  { value: "10a", label: "Zone 10a (30°F to 35°F)" },
+  { value: "10b", label: "Zone 10b (35°F to 40°F)" },
+  { value: "11a", label: "Zone 11a (40°F to 45°F)" },
+  { value: "11b", label: "Zone 11b (45°F to 50°F)" },
+  { value: "12a", label: "Zone 12a (50°F to 55°F)" },
+  { value: "12b", label: "Zone 12b (55°F to 60°F)" },
+  { value: "13a", label: "Zone 13a (60°F to 65°F)" },
+  { value: "13b", label: "Zone 13b (65°F to 70°F)" },
+];
 
 export default function PropagationForm() {
   const { plantId } = useParams<{ plantId: string }>();
@@ -61,6 +92,46 @@ export default function PropagationForm() {
       experienceLevel: "",
     },
   });
+
+  // Auto-detect USDA zone on mount
+  useEffect(() => {
+    const detectZone = async () => {
+      // Only auto-detect if zone field is empty
+      if (form.getValues("zone")) {
+        return;
+      }
+
+      const detectedZone = await autoDetectUSDAZone();
+      
+      if (detectedZone) {
+        // API returns full zone strings (e.g., "6a") - use directly
+        const matchingZone = zones.find(z => z.value === detectedZone);
+        
+        if (matchingZone) {
+          form.setValue("zone", matchingZone.value);
+          toast({
+            title: "Zone Auto-Detected",
+            description: `We've set your zone to ${matchingZone.label} based on your location. You can change this if needed.`,
+          });
+        } else {
+          // Fallback: try prefix match if exact match fails
+          const prefixMatch = zones.find(z => z.value.startsWith(detectedZone.charAt(0)));
+          if (prefixMatch) {
+            form.setValue("zone", prefixMatch.value);
+            toast({
+              title: "Zone Auto-Detected",
+              description: `We've set your zone to ${prefixMatch.label} based on your location. You can change this if needed.`,
+            });
+          }
+        }
+      } else {
+        // Silently fail - user can select manually
+        console.log('[Form] Auto-detection unavailable, user can select zone manually');
+      }
+    };
+
+    detectZone();
+  }, []);
 
   const createRequestMutation = useMutation({
     mutationFn: async (data: InsertPropagationRequest) => {
@@ -123,23 +194,6 @@ export default function PropagationForm() {
       </div>
     );
   }
-
-  const zones = [
-    { value: "1a", label: "Zone 1a (-60°F to -55°F)" },
-    { value: "1b", label: "Zone 1b (-55°F to -50°F)" },
-    { value: "3a", label: "Zone 3a (-40°F to -35°F)" },
-    { value: "3b", label: "Zone 3b (-35°F to -30°F)" },
-    { value: "5a", label: "Zone 5a (-20°F to -15°F)" },
-    { value: "5b", label: "Zone 5b (-15°F to -10°F)" },
-    { value: "7a", label: "Zone 7a (0°F to 5°F)" },
-    { value: "7b", label: "Zone 7b (5°F to 10°F)" },
-    { value: "9a", label: "Zone 9a (20°F to 25°F)" },
-    { value: "9b", label: "Zone 9b (25°F to 30°F)" },
-    { value: "10a", label: "Zone 10a (30°F to 35°F)" },
-    { value: "10b", label: "Zone 10b (35°F to 40°F)" },
-    { value: "12a", label: "Zone 12a (50°F to 55°F)" },
-    { value: "13a", label: "Zone 13a (60°F to 65°F)" },
-  ];
 
   return (
     <div className="min-h-screen bg-background">
