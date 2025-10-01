@@ -166,32 +166,21 @@ export default function AllPlants() {
               </div>
             </Link>
             
-            <div className="flex items-center space-x-4">
-              {/* Zone Selector */}
-              <div className="flex items-center space-x-2">
-                <MapPin className="h-4 w-4 text-muted-foreground" />
-                <Select value={selectedZone} onValueChange={handleZoneChange}>
-                  <SelectTrigger className="w-[120px]" data-testid="select-zone-header">
-                    <SelectValue placeholder="Select zone" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {USDA_ZONES.map((zone) => (
-                      <SelectItem key={zone} value={zone}>
-                        Zone {zone}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <Button
-                variant="ghost"
-                onClick={() => setLocation("/")}
-                data-testid="button-back-home"
-              >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Home
-              </Button>
+            {/* Zone Selector */}
+            <div className="flex items-center space-x-2">
+              <MapPin className="h-4 w-4 text-muted-foreground" />
+              <Select value={selectedZone} onValueChange={handleZoneChange}>
+                <SelectTrigger className="w-[120px]" data-testid="select-zone-header">
+                  <SelectValue placeholder="Select zone" />
+                </SelectTrigger>
+                <SelectContent>
+                  {USDA_ZONES.map((zone) => (
+                    <SelectItem key={zone} value={zone}>
+                      Zone {zone}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
@@ -335,6 +324,18 @@ export default function AllPlants() {
                 ))}
               </div>
             )}
+
+            {/* Back to Home Button */}
+            <div className="mt-12 text-center">
+              <Button
+                variant="outline"
+                onClick={() => setLocation("/")}
+                data-testid="button-back-home"
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Home
+              </Button>
+            </div>
           </div>
         </div>
       </section>
