@@ -1,6 +1,8 @@
 import { Plant } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLocation } from "wouter";
+import { useState } from "react";
+import { Sprout } from "lucide-react";
 
 interface PlantCardProps {
   plant: Plant;
@@ -9,6 +11,7 @@ interface PlantCardProps {
 
 export function PlantCard({ plant, onPlantSelect }: PlantCardProps) {
   const [, setLocation] = useLocation();
+  const [imageError, setImageError] = useState(false);
 
   const difficultyColors = {
     easy: "bg-primary/10 text-primary",
@@ -30,12 +33,17 @@ export function PlantCard({ plant, onPlantSelect }: PlantCardProps) {
       onClick={handleClick}
       data-testid={`card-plant-${plant.id}`}
     >
-      {plant.imageUrl && (
+      {plant.imageUrl && !imageError ? (
         <img
           src={plant.imageUrl}
           alt={plant.commonName}
           className="w-full h-48 object-cover"
+          onError={() => setImageError(true)}
         />
+      ) : (
+        <div className="w-full h-48 bg-gradient-to-br from-primary/10 to-accent/20 flex items-center justify-center">
+          <Sprout className="w-16 h-16 text-primary/40" />
+        </div>
       )}
       <CardContent className="p-4">
         <h4 className="font-semibold text-foreground mb-1">{plant.name}</h4>
