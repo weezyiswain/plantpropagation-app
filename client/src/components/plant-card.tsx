@@ -1,7 +1,7 @@
 import { Plant } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLocation } from "wouter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Sprout } from "lucide-react";
 
 interface PlantCardProps {
@@ -12,6 +12,10 @@ interface PlantCardProps {
 export function PlantCard({ plant, onPlantSelect }: PlantCardProps) {
   const [, setLocation] = useLocation();
   const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    setImageError(false);
+  }, [plant.imageUrl]);
 
   const difficultyColors = {
     easy: "bg-primary/10 text-primary",
@@ -38,11 +42,13 @@ export function PlantCard({ plant, onPlantSelect }: PlantCardProps) {
           src={plant.imageUrl}
           alt={plant.commonName}
           className="w-full h-48 object-cover"
+          loading="lazy"
+          decoding="async"
           onError={() => setImageError(true)}
         />
       ) : (
-        <div className="w-full h-48 bg-gradient-to-br from-primary/10 to-accent/20 flex items-center justify-center">
-          <Sprout className="w-16 h-16 text-primary/40" />
+        <div className="w-full h-48 bg-gradient-to-br from-primary/10 to-accent/20 flex items-center justify-center" data-testid="plant-image-fallback">
+          <Sprout className="w-16 h-16 text-primary/40" aria-hidden="true" />
         </div>
       )}
       <CardContent className="p-4">
