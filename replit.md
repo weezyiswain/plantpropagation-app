@@ -122,12 +122,13 @@ Preferred communication style: Simple, everyday language.
 - Users can focus on browsing plants without data entry friction
 
 **Zone Selection & Auto-Detection:**
-- Zone selector visible in header with MapPin icon on all pages
+- Zone selector visible in header with MapPin icon on all pages (Home, All Plants, Results)
+- **Results page zone switching**: Users can change their zone directly on propagation guide pages - creates new request with updated zone and reloads content with zone-specific recommendations
 - Auto-detects user's USDA hardiness zone on first visit using IP geolocation
 - Uses free APIs (no API keys required):
   - ipapi.co (HTTPS) for IP-based geolocation and ZIP code
   - phzmapi.org (HTTPS) for ZIP code to hardiness zone conversion
-- Zone persisted in localStorage across sessions
+- Zone persisted in localStorage across sessions (home/all-plants pages)
 - Retry logic for network resilience (500ms backoff, 1 retry per API)
 - Supports all USDA zones 1a-13b
 - User can manually change zone at any time via header selector
