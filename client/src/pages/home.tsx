@@ -145,17 +145,17 @@ export default function Home() {
 
                 {/* Quick Start Options */}
                 <div>
-                  <div className="flex items-center gap-2 mb-3">
+                  <div className="flex items-center justify-center gap-2 mb-3">
                     <p className="text-sm text-muted-foreground">
-                      Or browse all plants
+                      Or
                     </p>
                     <Button
-                      variant="link"
+                      variant="outline"
                       onClick={() => setLocation("/all-plants")}
-                      className="text-sm h-auto p-0 text-primary hover:text-primary/80"
+                      className="text-sm"
                       data-testid="button-browse-all"
                     >
-                      Search all plants →
+                      Browse all plants
                     </Button>
                   </div>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
