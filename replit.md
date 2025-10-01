@@ -50,10 +50,9 @@ Preferred communication style: Simple, everyday language.
 - `GET /api/propagation-requests/:id` - Retrieve propagation request
 
 **Key Pages:**
-- `/` - Homepage with plant search and popular plants showcase
-- `/all-plants` - Complete alphabetical list of all plants in database
-- `/propagation-form/:plantId` - Plant-specific propagation form with auto zone detection
-- `/results/:requestId` - Propagation results and recommendations
+- `/` - Homepage with plant search, popular plants, and zone selector in header
+- `/all-plants` - Complete alphabetical list with simplified display (name + difficulty only)
+- `/results/:requestId` - Propagation results and recommendations with instant access
 
 ### Data Storage
 
@@ -111,22 +110,34 @@ Preferred communication style: Simple, everyday language.
 
 ### Smart Features
 
-**Simplified Propagation Form:**
-- Streamlined to 3 essential fields for optimal user experience:
-  1. **Plant Maturity Level** - Seedling, Young, Mature, or Established
-  2. **Growing Environment** - Inside, Outside, or Greenhouse
-  3. **USDA Growing Zone** - Auto-detected or manually selected
-- Success rate adjustments based on maturity (+5% established, -10% seedling) and environment (+5% greenhouse, -5% outside)
-- Removed fields: soil conditions, preferred method, experience level (simplified for clarity)
+**Instant Propagation Results:**
+- Simplified UX eliminates multi-step forms - select a plant, get instant results
+- Zone selector integrated into page headers (homepage + All Plants)
+- Default values used automatically: maturity="mature", environment="inside"
+- No form required - clicking any plant goes directly to personalized results
+- Users can focus on browsing plants without data entry friction
 
-**Auto-Detection of USDA Hardiness Zone:**
-- Automatically detects user's USDA growing zone based on IP location
+**Zone Selection & Auto-Detection:**
+- Zone selector visible in header with MapPin icon on all pages
+- Auto-detects user's USDA hardiness zone on first visit using IP geolocation
 - Uses free APIs (no API keys required):
   - ipapi.co (HTTPS) for IP-based geolocation and ZIP code
   - phzmapi.org (HTTPS) for ZIP code to hardiness zone conversion
-- Auto-populates zone field on propagation form load
+- Zone persisted in localStorage across sessions
 - Retry logic for network resilience (500ms backoff, 1 retry per API)
 - Supports all USDA zones 1a-13b
-- User can manually override auto-detected zone
+- User can manually change zone at any time via header selector
 - Silent fallback when detection fails (user selects manually)
-- Validates 5-digit ZIP codes regardless of country name for US territories
+
+**Simplified All Plants Page:**
+- Clean, minimal display showing only essential information
+- Each plant shows: common name, scientific name, and difficulty level
+- Removed success rate metric to reduce cognitive load
+- Instant access to propagation guides with one click
+- Alphabetically sorted for easy browsing
+
+**Component Architecture:**
+- PlantCard and PlantSearch accept onPlantSelect callbacks for unified plant selection
+- Direct-to-results flow bypasses legacy form route
+- Mutation-based navigation creates propagation request and redirects atomically
+- Toast notifications provide feedback when zone is missing
