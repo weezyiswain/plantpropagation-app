@@ -141,3 +141,13 @@ Preferred communication style: Simple, everyday language.
 - Direct-to-results flow bypasses legacy form route
 - Mutation-based navigation creates propagation request and redirects atomically
 - Toast notifications provide feedback when zone is missing
+
+**Ad Monetization Infrastructure:**
+- Strategic ad placement zones throughout the site for revenue generation
+- Reusable AdPlaceholder component with responsive sizing for multiple ad formats
+- **Homepage placements**: After hero section, after popular plants section
+- **Results page placements**: Top banner, mid-content (between sections), bottom banner, sidebar rectangles
+- Responsive ad behavior: Desktop shows leaderboard (728x90) and rectangles (300x250), mobile shows banners (320x50)
+- All ad slots have unique identifiers (data-ad-slot, data-testid) for easy integration with ad networks
+- Fixed dimensions prevent layout shifts and maintain consistent user experience
+- Ready for Google AdSense, Mediavine, or custom ad network integration
