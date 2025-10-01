@@ -7,11 +7,13 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import PropagationForm from "@/pages/propagation-form";
 import Results from "@/pages/results";
+import AllPlants from "@/pages/all-plants";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/all-plants" component={AllPlants} />
       <Route path="/propagation-form/:plantId" component={PropagationForm} />
       <Route path="/results/:requestId" component={Results} />
       <Route component={NotFound} />

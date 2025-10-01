@@ -119,10 +119,7 @@ export default function Home() {
               <Button
                 variant="secondary"
                 size="lg"
-                onClick={() => {
-                  const section = document.querySelector('input[data-testid="input-plant-search"]');
-                  section?.scrollIntoView({ behavior: 'smooth' });
-                }}
+                onClick={() => setLocation("/all-plants")}
                 data-testid="button-view-all-plants"
               >
                 Search All Plants
