@@ -211,13 +211,13 @@ export default function AllPlants() {
             </div>
 
             {/* Search and Filter Controls */}
-            <div className="space-y-4 mb-6">
-              {/* Search Bar */}
-              <div className="relative">
+            <div className="flex items-center gap-4 mb-6">
+              {/* Search Bar - Left side, 1/3 width */}
+              <div className="relative flex-1 max-w-xs">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   type="text"
-                  placeholder="Search plants by name..."
+                  placeholder="Search plants..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-9 h-10"
@@ -225,8 +225,13 @@ export default function AllPlants() {
                 />
               </div>
 
-              {/* Sort and Filter Row */}
-              <div className="flex flex-wrap items-center gap-4">
+              {/* Sort and Filter - Right side */}
+              <div className="flex items-center gap-4 ml-auto">
+                {/* Results Count */}
+                <div className="text-xs text-muted-foreground">
+                  {filteredAndSortedPlants.length} plant{filteredAndSortedPlants.length !== 1 ? 's' : ''}
+                </div>
+
                 {/* Sort By */}
                 <div className="flex items-center gap-2">
                   <Label htmlFor="sort-select" className="text-xs text-muted-foreground whitespace-nowrap flex items-center gap-1">
@@ -264,11 +269,6 @@ export default function AllPlants() {
                       <SelectItem value="hard">Hard</SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
-                
-                {/* Results Count */}
-                <div className="text-xs text-muted-foreground ml-auto">
-                  {filteredAndSortedPlants.length} plant{filteredAndSortedPlants.length !== 1 ? 's' : ''}
                 </div>
               </div>
             </div>
