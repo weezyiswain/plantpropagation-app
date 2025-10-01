@@ -167,8 +167,9 @@ export default function AllPlants() {
             </Link>
             
             {/* Zone Selector */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 text-muted-foreground">
               <MapPin className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm">Customized for:</span>
               <Select value={selectedZone} onValueChange={handleZoneChange}>
                 <SelectTrigger className="w-[120px]" data-testid="select-zone-header">
                   <SelectValue placeholder="Select zone" />
