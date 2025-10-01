@@ -23,10 +23,7 @@ export const propagationRequests = pgTable("propagation_requests", {
   plantId: varchar("plant_id").notNull(),
   zone: text("zone").notNull(),
   maturity: text("maturity").notNull(), // "seedling", "young", "mature", "established"
-  soilCondition: text("soil_condition").notNull(),
-  environment: text("environment").notNull(), // "indoor", "outdoor", "greenhouse", "mixed"
-  preferredMethod: text("preferred_method"), // "any", "cutting", "division", "layering"
-  experienceLevel: text("experience_level").notNull(), // "beginner", "intermediate", "advanced"
+  environment: text("environment").notNull(), // "inside", "outside", "greenhouse"
   createdAt: timestamp("created_at").defaultNow(),
 });
 
