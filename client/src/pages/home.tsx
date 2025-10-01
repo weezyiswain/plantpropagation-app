@@ -139,7 +139,7 @@ export default function Home() {
             </p>
 
             {/* Plant Search Form */}
-            <div className="bg-card rounded-xl shadow-lg p-8 max-w-2xl mx-auto">
+            <div className="bg-card rounded-xl shadow-lg p-8 max-w-4xl mx-auto">
               <div className="space-y-6">
                 <PlantSearch onPlantSelect={handleQuickPlantSelect} />
 
