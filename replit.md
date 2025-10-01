@@ -49,6 +49,12 @@ Preferred communication style: Simple, everyday language.
 - `POST /api/propagation-requests` - Create propagation request
 - `GET /api/propagation-requests/:id` - Retrieve propagation request
 
+**Key Pages:**
+- `/` - Homepage with plant search and popular plants showcase
+- `/all-plants` - Complete alphabetical list of all plants in database
+- `/propagation-form/:plantId` - Plant-specific propagation form with auto zone detection
+- `/results/:requestId` - Propagation results and recommendations
+
 ### Data Storage
 
 **Database Schema (PostgreSQL via Drizzle):**
