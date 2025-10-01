@@ -34,6 +34,11 @@ export default function AllPlants() {
     queryKey: ["/api/plants"],
   });
 
+  // Scroll to top on page load
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Auto-detect zone on mount if not already set
   useEffect(() => {
     const detectZone = async () => {
