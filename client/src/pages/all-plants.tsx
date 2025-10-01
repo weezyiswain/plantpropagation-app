@@ -198,10 +198,12 @@ export default function AllPlants() {
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
-                          {plant.commonName}
+                          {plant.name}
                         </h3>
-                        <p className="text-sm text-muted-foreground italic">
-                          {plant.scientificName}
+                        <p className="text-sm text-muted-foreground flex items-center gap-2">
+                          <span>{plant.commonName}</span>
+                          <span>•</span>
+                          <span className="italic">{plant.scientificName}</span>
                         </p>
                       </div>
                       <div className="text-right">

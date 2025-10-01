@@ -42,6 +42,7 @@ function mapRowToPlant(row: any): Plant {
   
   return {
     id,
+    name: row.name || row.common_name,
     scientificName: row.scientific_name || row.common_name,
     commonName: row.common_name,
     imageUrl: row.image_url || null,
@@ -160,31 +161,55 @@ export class MemStorage implements IStorage {
       return [];
     }
 
+    const pool = createDBConnection();
+    
     try {
       console.log('[Storage] Searching plants for:', query);
-      const pool = createDBConnection();
       const db = drizzle(pool);
       
-      const results = await db.execute(
-        sql`SELECT * FROM "plants" 
-        WHERE name ILIKE ${`%${query}%`}
-        OR common_name ILIKE ${`%${query}%`} 
-        OR scientific_name ILIKE ${`%${query}%`}
-        LIMIT 20`
-      );
-      
-      await pool.end();
-      
-      console.log('[Storage] Search returned', results.rows?.length || 0, 'results');
-      
-      if (results.rows && results.rows.length > 0) {
-        return results.rows.map(mapRowToPlant);
+      // Try with name column first
+      try {
+        const results = await db.execute(
+          sql`SELECT * FROM "plants" 
+          WHERE name ILIKE ${`%${query}%`}
+          OR common_name ILIKE ${`%${query}%`} 
+          OR scientific_name ILIKE ${`%${query}%`}
+          LIMIT 20`
+        );
+        
+        console.log('[Storage] Search returned', results.rows?.length || 0, 'results');
+        
+        if (results.rows && results.rows.length > 0) {
+          return results.rows.map(mapRowToPlant);
+        }
+        
+        return [];
+      } catch (columnErr: any) {
+        // If name column doesn't exist (error code 42703), retry without it
+        if (columnErr?.code === '42703' || String(columnErr?.code) === '42703') {
+          console.log('[Storage] name column not found, retrying without it');
+          const results = await db.execute(
+            sql`SELECT * FROM "plants" 
+            WHERE common_name ILIKE ${`%${query}%`} 
+            OR scientific_name ILIKE ${`%${query}%`}
+            LIMIT 20`
+          );
+          
+          console.log('[Storage] Search returned', results.rows?.length || 0, 'results');
+          
+          if (results.rows && results.rows.length > 0) {
+            return results.rows.map(mapRowToPlant);
+          }
+          
+          return [];
+        }
+        throw columnErr;
       }
-      
-      return [];
     } catch (err) {
       console.error('[Storage] Database search error:', err);
       return [];
+    } finally {
+      await pool.end();
     }
   }
   

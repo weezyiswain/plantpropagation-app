@@ -38,8 +38,12 @@ export function PlantCard({ plant, onPlantSelect }: PlantCardProps) {
         />
       )}
       <CardContent className="p-4">
-        <h4 className="font-semibold text-foreground mb-1">{plant.commonName}</h4>
-        <p className="text-sm text-muted-foreground mb-2">{plant.scientificName}</p>
+        <h4 className="font-semibold text-foreground mb-1">{plant.name}</h4>
+        <p className="text-sm text-muted-foreground mb-2 flex items-center gap-2">
+          <span>{plant.commonName}</span>
+          <span>•</span>
+          <span className="italic">{plant.scientificName}</span>
+        </p>
         <div className="flex items-center justify-between text-xs">
           <span
             className={`px-2 py-1 rounded-full capitalize ${

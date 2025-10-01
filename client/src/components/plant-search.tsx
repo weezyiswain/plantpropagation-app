@@ -95,8 +95,12 @@ export function PlantSearch({ onPlantSelect }: PlantSearchProps) {
                     />
                   )}
                   <div>
-                    <p className="font-medium text-foreground">{plant.commonName}</p>
-                    <p className="text-sm text-muted-foreground">{plant.scientificName}</p>
+                    <p className="font-medium text-foreground">{plant.name}</p>
+                    <p className="text-sm text-muted-foreground flex items-center gap-2">
+                      <span>{plant.commonName}</span>
+                      <span>•</span>
+                      <span className="italic">{plant.scientificName}</span>
+                    </p>
                   </div>
                 </button>
               ))}

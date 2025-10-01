@@ -4,6 +4,7 @@ import { z } from "zod";
 
 export const plants = pgTable("plants", {
   id: varchar("id").primaryKey(),
+  name: text("name").notNull(),
   scientificName: text("scientific_name").notNull(),
   commonName: text("common_name").notNull(),
   imageUrl: text("image_url"),
