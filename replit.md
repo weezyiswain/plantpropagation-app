@@ -57,9 +57,11 @@ Preferred communication style: Simple, everyday language.
 - **users table**: User authentication data (username, password)
 
 **Current Implementation:**
-- In-memory storage (MemStorage class) for development
-- Pre-populated with curated plant database (TOP_PLANTS array)
-- Interface-based storage abstraction (IStorage) allowing easy swap to database implementation
+- **Supabase Integration**: Live plant search connected to Supabase PostgreSQL database via DATABASE_URL
+- **Hybrid Storage**: Queries Supabase first for plant data, falls back to in-memory storage
+- Pre-populated with curated plant database (TOP_PLANTS array) for fallback
+- Interface-based storage abstraction (IStorage) for flexibility
+- Uses node-postgres (pg) adapter with SSL for Supabase pooler compatibility
 
 **Data Models:**
 - JSON fields for complex data (propagation methods, monthly arrays, zone-specific recommendations, step-by-step instructions)
@@ -100,3 +102,17 @@ Preferred communication style: Simple, everyday language.
 - TanStack React Query for server state, caching, and synchronization
 - Query client configured with custom fetch function and error handling
 - Infinite stale time for development efficiency
+
+### Smart Features
+
+**Auto-Detection of USDA Hardiness Zone:**
+- Automatically detects user's USDA growing zone based on IP location
+- Uses free APIs (no API keys required):
+  - ipapi.co (HTTPS) for IP-based geolocation and ZIP code
+  - phzmapi.org (HTTPS) for ZIP code to hardiness zone conversion
+- Auto-populates zone field on propagation form load
+- Retry logic for network resilience (500ms backoff, 1 retry per API)
+- Supports all USDA zones 1a-13b
+- User can manually override auto-detected zone
+- Silent fallback when detection fails (user selects manually)
+- Validates 5-digit ZIP codes regardless of country name for US territories
