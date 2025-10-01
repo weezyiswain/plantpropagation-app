@@ -164,7 +164,8 @@ export default function Results() {
               </h3>
               
               {/* Zone Selector */}
-              <div className="flex items-center justify-center space-x-2 mb-3">
+              <div className="flex items-center justify-center space-x-2 text-muted-foreground">
+                <span>Customized for:</span>
                 <MapPin className="h-4 w-4 text-muted-foreground" />
                 <Select value={selectedZone} onValueChange={handleZoneChange}>
                   <SelectTrigger className="w-[120px]" data-testid="select-zone-header">
@@ -179,10 +180,6 @@ export default function Results() {
                   </SelectContent>
                 </Select>
               </div>
-              
-              <p className="text-muted-foreground">
-                Customized for Zone {request.zone}
-              </p>
             </div>
 
             {/* Top Banner Ad */}
