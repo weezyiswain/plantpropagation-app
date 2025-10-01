@@ -1,7 +1,7 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Plant, InsertPropagationRequest } from "@shared/schema";
 import { Button } from "@/components/ui/button";
-import { Sprout, ArrowLeft, AlertCircle, MapPin } from "lucide-react";
+import { Sprout, ArrowLeft, AlertCircle, MapPin, ArrowUpDown } from "lucide-react";
 import { useLocation } from "wouter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect, useState } from "react";
@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { autoDetectUSDAZone } from "@/lib/zone-detection";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
 
 const USDA_ZONES = [
   "1a", "1b", "2a", "2b", "3a", "3b", "4a", "4b", "5a", "5b",
@@ -16,12 +17,17 @@ const USDA_ZONES = [
   "11a", "11b", "12a", "12b", "13a", "13b"
 ];
 
+type SortOption = 'name-asc' | 'name-desc' | 'difficulty-asc' | 'difficulty-desc' | 'success-asc' | 'success-desc';
+type DifficultyFilter = 'all' | 'easy' | 'medium' | 'hard';
+
 export default function AllPlants() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [selectedZone, setSelectedZone] = useState<string>(() => {
     return localStorage.getItem('userZone') || '';
   });
+  const [sortBy, setSortBy] = useState<SortOption>('name-asc');
+  const [difficultyFilter, setDifficultyFilter] = useState<DifficultyFilter>('all');
   
   const { data: plants = [], isLoading, isError, error, refetch } = useQuery<Plant[]>({
     queryKey: ["/api/plants"],
@@ -72,9 +78,37 @@ export default function AllPlants() {
     },
   });
 
-  const sortedPlants = [...plants].sort((a, b) => 
-    a.commonName.localeCompare(b.commonName)
-  );
+  const difficultyOrder: Record<string, number> = {
+    'easy': 1,
+    'medium': 2,
+    'hard': 3
+  };
+
+  const filteredAndSortedPlants = plants
+    .filter((plant) => {
+      if (difficultyFilter === 'all') return true;
+      return plant.difficulty?.toLowerCase() === difficultyFilter;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'name-asc':
+          return (a.name || a.commonName).localeCompare(b.name || b.commonName);
+        case 'name-desc':
+          return (b.name || b.commonName).localeCompare(a.name || a.commonName);
+        case 'difficulty-asc':
+          return (difficultyOrder[a.difficulty?.toLowerCase() || 'medium'] || 2) - 
+                 (difficultyOrder[b.difficulty?.toLowerCase() || 'medium'] || 2);
+        case 'difficulty-desc':
+          return (difficultyOrder[b.difficulty?.toLowerCase() || 'medium'] || 2) - 
+                 (difficultyOrder[a.difficulty?.toLowerCase() || 'medium'] || 2);
+        case 'success-asc':
+          return (a.indoorSuccessRate || 0) - (b.indoorSuccessRate || 0);
+        case 'success-desc':
+          return (b.indoorSuccessRate || 0) - (a.indoorSuccessRate || 0);
+        default:
+          return 0;
+      }
+    });
 
   const handlePlantClick = (plantId: string) => {
     if (!selectedZone) {
@@ -145,13 +179,63 @@ export default function AllPlants() {
       <section className="py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
+            <div className="text-center mb-8">
               <h2 className="text-4xl font-bold text-foreground mb-4" data-testid="text-all-plants-heading">
                 All Plants
               </h2>
               <p className="text-lg text-muted-foreground" data-testid="text-plant-count">
                 Browse our complete database of {plants.length} plants
               </p>
+            </div>
+
+            {/* Sort and Filter Controls */}
+            <div className="bg-card border border-border rounded-lg p-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Sort By */}
+                <div className="space-y-2">
+                  <Label htmlFor="sort-select" className="flex items-center gap-2 text-sm font-medium">
+                    <ArrowUpDown className="h-4 w-4" />
+                    Sort By
+                  </Label>
+                  <Select value={sortBy} onValueChange={(value) => setSortBy(value as SortOption)}>
+                    <SelectTrigger id="sort-select" data-testid="select-sort">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="name-asc">Name (A-Z)</SelectItem>
+                      <SelectItem value="name-desc">Name (Z-A)</SelectItem>
+                      <SelectItem value="difficulty-asc">Difficulty (Easy to Hard)</SelectItem>
+                      <SelectItem value="difficulty-desc">Difficulty (Hard to Easy)</SelectItem>
+                      <SelectItem value="success-desc">Success Rate (High to Low)</SelectItem>
+                      <SelectItem value="success-asc">Success Rate (Low to High)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Filter by Difficulty */}
+                <div className="space-y-2">
+                  <Label htmlFor="difficulty-filter" className="text-sm font-medium">
+                    Filter by Difficulty
+                  </Label>
+                  <Select value={difficultyFilter} onValueChange={(value) => setDifficultyFilter(value as DifficultyFilter)}>
+                    <SelectTrigger id="difficulty-filter" data-testid="select-difficulty-filter">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Difficulties</SelectItem>
+                      <SelectItem value="easy">Easy</SelectItem>
+                      <SelectItem value="medium">Medium</SelectItem>
+                      <SelectItem value="hard">Hard</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              
+              {difficultyFilter !== 'all' && (
+                <div className="mt-4 text-sm text-muted-foreground">
+                  Showing {filteredAndSortedPlants.length} {difficultyFilter} plant{filteredAndSortedPlants.length !== 1 ? 's' : ''}
+                </div>
+              )}
             </div>
 
             {isLoading ? (
@@ -176,19 +260,21 @@ export default function AllPlants() {
                   Retry
                 </Button>
               </div>
-            ) : sortedPlants.length === 0 ? (
+            ) : filteredAndSortedPlants.length === 0 ? (
               <div className="text-center py-12">
                 <Sprout className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-foreground mb-2" data-testid="text-empty-heading">
                   No Plants Found
                 </h3>
                 <p className="text-muted-foreground" data-testid="text-empty-message">
-                  Our plant database is currently empty.
+                  {difficultyFilter !== 'all' 
+                    ? `No ${difficultyFilter} plants found in our database.`
+                    : 'Our plant database is currently empty.'}
                 </p>
               </div>
             ) : (
               <div className="grid gap-3">
-                {sortedPlants.map((plant) => (
+                {filteredAndSortedPlants.map((plant) => (
                   <button
                     key={plant.id}
                     onClick={() => handlePlantClick(plant.id)}

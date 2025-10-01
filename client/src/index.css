@@ -58,3 +58,27 @@
   --ring: hsl(85, 55%, 45%);
 }
 
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+.step-number {
+  background: linear-gradient(135deg, hsl(95, 60%, 25%), hsl(85, 60%, 50%));
+}
+
+.plant-card {
+  transition: all 0.3s ease-in-out;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.plant-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
