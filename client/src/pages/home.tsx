@@ -4,7 +4,7 @@ import { PlantSearch } from "@/components/plant-search";
 import { PlantCard } from "@/components/plant-card";
 import { Button } from "@/components/ui/button";
 import { Sprout, MapPin } from "lucide-react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useEffect, useState } from "react";
@@ -113,7 +113,7 @@ export default function Home() {
       <header className="bg-card border-b border-border sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <Link href="/" className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity" data-testid="link-home-logo">
               <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
                 <Sprout className="text-primary-foreground" />
               </div>
@@ -121,7 +121,7 @@ export default function Home() {
                 <h1 className="text-xl font-bold text-foreground">PlantProp</h1>
                 <p className="text-xs text-muted-foreground">Smart Propagation Guide</p>
               </div>
-            </div>
+            </Link>
             
             {/* Zone Selector */}
             <div className="flex items-center space-x-2">

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useParams, useLocation } from "wouter";
+import { useParams, useLocation, Link } from "wouter";
 import { PropagationRequest, Plant } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -79,7 +79,7 @@ export default function Results() {
       <header className="bg-card border-b border-border sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <Link href="/" className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity" data-testid="link-home-logo">
               <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
                 <Sprout className="text-primary-foreground" />
               </div>
@@ -87,7 +87,7 @@ export default function Results() {
                 <h1 className="text-xl font-bold text-foreground">PlantProp</h1>
                 <p className="text-xs text-muted-foreground">Smart Propagation Guide</p>
               </div>
-            </div>
+            </Link>
             <Button
               variant="ghost"
               onClick={() => setLocation("/")}

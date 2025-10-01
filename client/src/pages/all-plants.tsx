@@ -2,7 +2,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { Plant, InsertPropagationRequest } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Sprout, ArrowLeft, AlertCircle, MapPin, ArrowUpDown, Search } from "lucide-react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -156,7 +156,7 @@ export default function AllPlants() {
       <header className="bg-card border-b border-border sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <Link href="/" className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity" data-testid="link-home-logo">
               <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
                 <Sprout className="text-primary-foreground" />
               </div>
@@ -164,7 +164,7 @@ export default function AllPlants() {
                 <h1 className="text-xl font-bold text-foreground">PlantProp</h1>
                 <p className="text-xs text-muted-foreground">Smart Propagation Guide</p>
               </div>
-            </div>
+            </Link>
             
             <div className="flex items-center space-x-4">
               {/* Zone Selector */}
