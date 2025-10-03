@@ -2,7 +2,7 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   darkMode: ["class"],
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
       borderRadius: {
@@ -62,13 +62,15 @@ const config: Config = {
           ring: "var(--sidebar-ring)",
         },
       },
-      borderColor: {
-        border: "var(--border)", // ✅ this makes `border-border` valid
-      },
       fontFamily: {
-        sans: ["var(--font-sans)"],
-        serif: ["var(--font-serif)"],
-        mono: ["var(--font-mono)"],
+        sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+        serif: ["var(--font-serif)", "ui-serif", "Georgia", "serif"],
+        mono: [
+          "var(--font-mono)",
+          "ui-monospace",
+          "SFMono-Regular",
+          "monospace",
+        ],
       },
       keyframes: {
         "accordion-down": {
@@ -86,7 +88,11 @@ const config: Config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+  plugins: [
+    require("@tailwindcss/postcss"),
+    require("tailwindcss-animate"),
+    require("@tailwindcss/typography"),
+  ],
 };
 
 export default config;
