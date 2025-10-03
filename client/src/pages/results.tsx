@@ -158,7 +158,7 @@ export default function Results() {
                   variant="ghost"
                   onClick={() => setLocation("/all-plants")}
                   data-testid="button-back-home"
-                  className="flex-shrink-0"
+                  className="flex-shrink-0 px-4 py-2 h-auto"
                 >
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Back
