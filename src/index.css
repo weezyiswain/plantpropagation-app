@@ -2,73 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --background: 40 35% 96%;
+  --foreground: 95 50% 15%;
+  --card: 0 0% 100%;
+  --card-foreground: 95 50% 15%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 95 50% 15%;
+  --primary: 95 60% 25%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 40 25% 90%;
+  --secondary-foreground: 95 50% 20%;
+  --muted: 40 20% 92%;
+  --muted-foreground: 95 25% 40%;
+  --accent: 85 60% 88%;
+  --accent-foreground: 95 50% 20%;
+  --destructive: 0 70% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 40 20% 88%;
+  --input: 40 25% 94%;
+  --ring: 95 60% 25%;
+  --radius: 0.75rem;
+
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: Menlo, monospace;
+}
+
+.dark {
+  --background: 95 20% 10%;
+  --foreground: 40 20% 92%;
+  --card: 95 15% 14%;
+  --card-foreground: 40 20% 92%;
+  --popover: 95 15% 14%;
+  --popover-foreground: 40 20% 92%;
+  --primary: 85 55% 45%;
+  --primary-foreground: 95 20% 10%;
+  --secondary: 95 15% 22%;
+  --secondary-foreground: 40 20% 92%;
+  --muted: 95 12% 18%;
+  --muted-foreground: 40 15% 65%;
+  --accent: 85 40% 30%;
+  --accent-foreground: 40 20% 92%;
+  --destructive: 0 70% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 95 12% 22%;
+  --input: 95 10% 16%;
+  --ring: 85 55% 45%;
+}
+
 @layer base {
   * {
     @apply border;
   }
 
-  body {
-    @apply font-sans antialiased bg-background text-foreground;
-  }
-}
-
-:root {
-  --background: hsl(40, 35%, 96%);
-  --foreground: hsl(95, 50%, 15%);
-  --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(95, 50%, 15%);
-  --popover: hsl(0, 0%, 100%);
-  --popover-foreground: hsl(95, 50%, 15%);
-  --primary: hsl(95, 60%, 25%);
-  --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(40, 25%, 90%);
-  --secondary-foreground: hsl(95, 50%, 20%);
-  --muted: hsl(40, 20%, 92%);
-  --muted-foreground: hsl(95, 25%, 40%);
-  --accent: hsl(85, 60%, 88%);
-  --accent-foreground: hsl(95, 50%, 20%);
-  --destructive: hsl(0, 70%, 50%);
-  --destructive-foreground: hsl(0, 0%, 100%);
-  --border: hsl(40, 20%, 88%);
-  --input: hsl(40, 25%, 94%);
-  --ring: hsl(95, 60%, 25%);
-  --sidebar-background: hsl(0, 0%, 100%);
-  --sidebar-foreground: hsl(95, 50%, 15%);
-  --sidebar-primary: hsl(95, 60%, 25%);
-  --sidebar-primary-foreground: hsl(0, 0%, 100%);
-  --sidebar-accent: hsl(85, 60%, 88%);
-  --sidebar-accent-foreground: hsl(95, 50%, 20%);
-  --sidebar-border: hsl(40, 20%, 88%);
-  --sidebar-ring: hsl(95, 60%, 25%);
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-serif: Georgia, serif;
-  --font-mono: Menlo, monospace;
-  --radius: 0.75rem;
-}
-
-.dark {
-  --background: hsl(95, 20%, 10%);
-  --foreground: hsl(40, 20%, 92%);
-  --card: hsl(95, 15%, 14%);
-  --card-foreground: hsl(40, 20%, 92%);
-  --popover: hsl(95, 15%, 14%);
-  --popover-foreground: hsl(40, 20%, 92%);
-  --primary: hsl(85, 55%, 45%);
-  --primary-foreground: hsl(95, 20%, 10%);
-  --secondary: hsl(95, 15%, 22%);
-  --secondary-foreground: hsl(40, 20%, 92%);
-  --muted: hsl(95, 12%, 18%);
-  --muted-foreground: hsl(40, 15%, 65%);
-  --accent: hsl(85, 40%, 30%);
-  --accent-foreground: hsl(40, 20%, 92%);
-  --destructive: hsl(0, 70%, 50%);
-  --destructive-foreground: hsl(0, 0%, 100%);
-  --border: hsl(95, 12%, 22%);
-  --input: hsl(95, 10%, 16%);
-  --ring: hsl(85, 55%, 45%);
-}
-
-@layer base {
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }
