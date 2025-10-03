@@ -191,11 +191,22 @@ export default function AllPlants() {
       <section className="py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-4xl font-bold text-foreground mb-4" data-testid="text-all-plants-heading">
-                All Plants
-              </h2>
-              <p className="text-lg text-muted-foreground" data-testid="text-plant-count">
+            <div className="mb-8">
+              <div className="flex items-center mb-4">
+                <Button
+                  variant="ghost"
+                  onClick={() => setLocation("/")}
+                  data-testid="button-back-home"
+                  className="flex-shrink-0 px-4 py-2 h-auto relative z-10"
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back
+                </Button>
+                <h2 className="flex-1 text-center text-4xl font-bold text-foreground -ml-20" data-testid="text-all-plants-heading">
+                  All Plants
+                </h2>
+              </div>
+              <p className="text-lg text-muted-foreground text-center" data-testid="text-plant-count">
                 Browse our complete database of {plants.length} plants
               </p>
             </div>
