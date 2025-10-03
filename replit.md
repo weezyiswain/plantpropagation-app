@@ -1,8 +1,8 @@
-# PlantProp - Smart Plant Propagation Guide
+# plantpropagationguide.com - Smart Plant Propagation Guide
 
 ## Overview
 
-PlantProp is a web application that helps users determine the optimal time and method to propagate their plants. The application provides personalized propagation recommendations based on user inputs including plant type, growing zone, maturity level, and growing environment. It features a comprehensive plant database with detailed propagation instructions, success rates, and care guidelines tailored to different hardiness zones and seasonal timing.
+plantpropagationguide.com is a web application that helps users determine the optimal time and method to propagate their plants. The application provides personalized propagation recommendations based on user inputs including plant type, growing zone, maturity level, and growing environment. It features a comprehensive plant database with detailed propagation instructions, success rates, and care guidelines tailored to different hardiness zones and seasonal timing.
 
 ## User Preferences
 
@@ -165,7 +165,7 @@ Preferred communication style: Simple, everyday language.
 - Ready for Google AdSense, Mediavine, or custom ad network integration
 
 **Logo Navigation:**
-- Logo (PlantProp icon + name + subtitle) is clickable from all pages to return to homepage
+- Logo (plantpropagationguide.com icon + name + subtitle) is clickable from all pages to return to homepage
 - Implemented consistently across Home, All Plants, Results, and Propagation Form pages
 - Uses wouter Link component with href="/" and data-testid="link-home-logo"
 - Hover effect (opacity-80) provides visual feedback for clickable state

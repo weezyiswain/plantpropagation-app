@@ -118,7 +118,7 @@ export default function Home() {
                 <Sprout className="text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-foreground">PlantProp</h1>
+                <h1 className="text-xl font-bold text-foreground">plantpropagationguide.com</h1>
                 <p className="text-xs text-muted-foreground">Smart Propagation Guide</p>
               </div>
             </Link>
@@ -317,7 +317,7 @@ export default function Home() {
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <Sprout className="text-primary-foreground h-5 w-5" />
               </div>
-              <span className="font-bold text-foreground">PlantProp</span>
+              <span className="font-bold text-foreground">plantpropagationguide.com</span>
             </div>
             <p className="text-sm text-muted-foreground mb-6 text-center max-w-md">
               Smart plant propagation guidance for gardeners of all levels.
