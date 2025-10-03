@@ -161,8 +161,7 @@ export default function AllPlants() {
                 <Sprout className="text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-foreground">plantpropagationguide.com</h1>
-                <p className="text-xs text-muted-foreground">Smart Propagation Guide</p>
+                <h1 className="text-xl font-bold text-foreground">Plant Propagation</h1>
               </div>
             </Link>
             

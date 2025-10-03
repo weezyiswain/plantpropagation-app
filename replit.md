@@ -165,7 +165,7 @@ Preferred communication style: Simple, everyday language.
 - Ready for Google AdSense, Mediavine, or custom ad network integration
 
 **Logo Navigation:**
-- Logo (plantpropagationguide.com icon + name + subtitle) is clickable from all pages to return to homepage
+- Logo (Plant Propagation icon + name) is clickable from all pages to return to homepage
 - Implemented consistently across Home, All Plants, Results, and Propagation Form pages
 - Uses wouter Link component with href="/" and data-testid="link-home-logo"
 - Hover effect (opacity-80) provides visual feedback for clickable state
