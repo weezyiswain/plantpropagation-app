@@ -2,7 +2,7 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   darkMode: ["class"],
-  content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       borderRadius: {
@@ -63,36 +63,13 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
-        serif: ["var(--font-serif)", "ui-serif", "Georgia", "serif"],
-        mono: [
-          "var(--font-mono)",
-          "ui-monospace",
-          "SFMono-Regular",
-          "monospace",
-        ],
-      },
-      keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
-      },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
+        sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
+        serif: ["Georgia", "ui-serif", "serif"],
+        mono: ["Menlo", "ui-monospace", "SFMono-Regular", "monospace"],
       },
     },
   },
-  plugins: [
-    require("@tailwindcss/postcss"),
-    require("tailwindcss-animate"),
-    require("@tailwindcss/typography"),
-  ],
+  plugins: [require("@tailwindcss/typography"), require("tailwindcss-animate")],
 };
 
 export default config;
