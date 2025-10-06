@@ -4,9 +4,9 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 
-// Configure for Node.js runtime with ES modules
+// Configure for Node.js runtime
 export const config = {
-  runtime: "nodejs20.x"
+  runtime: "nodejs"
 };
 
 // Inline schema definitions
