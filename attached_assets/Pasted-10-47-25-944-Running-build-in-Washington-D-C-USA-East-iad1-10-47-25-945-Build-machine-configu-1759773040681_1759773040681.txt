@@ -1,0 +1,56 @@
+10:47:25.944 Running build in Washington, D.C., USA (East) – iad1
+10:47:25.945 Build machine configuration: 2 cores, 8 GB
+10:47:26.012 Cloning github.com/weezyiswain/plantpropagation-app (Branch: main, Commit: e7c0846)
+10:47:26.856 Cloning completed: 844.000ms
+10:47:28.054 Restored build cache from previous deployment (3fXtEGm8qR4tY9qJenNiqvb9rhvA)
+10:47:28.603 Running "vercel build"
+10:47:29.087 Vercel CLI 48.2.0
+10:47:29.834 Running "install" command: `npm install`...
+10:47:32.261 
+10:47:32.262 up to date, audited 500 packages in 2s
+10:47:32.262 
+10:47:32.263 66 packages are looking for funding
+10:47:32.263   run `npm fund` for details
+10:47:32.292 
+10:47:32.292 5 moderate severity vulnerabilities
+10:47:32.293 
+10:47:32.293 To address all issues (including breaking changes), run:
+10:47:32.293   npm audit fix --force
+10:47:32.293 
+10:47:32.293 Run `npm audit` for details.
+10:47:32.545 
+10:47:32.546 > rest-express@1.0.0 build
+10:47:32.546 > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+10:47:32.546 
+10:47:32.864 [36mvite v5.4.20 [32mbuilding for production...[36m[39m
+10:47:32.920 transforming...
+10:47:37.915 [32m✓[39m 1844 modules transformed.
+10:47:38.344 rendering chunks...
+10:47:38.355 computing gzip size...
+10:47:38.374 [2m../dist/public/[22m[32mindex.html                 [39m[1m[2m  1.95 kB[22m[1m[22m[2m │ gzip:   0.74 kB[22m
+10:47:38.375 [2m../dist/public/[22m[2massets/[22m[35mindex-Dvdxmxxo.css  [39m[1m[2m 62.49 kB[22m[1m[22m[2m │ gzip:  11.20 kB[22m
+10:47:38.375 [2m../dist/public/[22m[2massets/[22m[36mindex-DEgSOpqf.js   [39m[1m[33m506.23 kB[39m[22m[2m │ gzip: 154.28 kB[22m
+10:47:38.375 [33m
+10:47:38.376 (!) Some chunks are larger than 500 kB after minification. Consider:
+10:47:38.376 - Using dynamic import() to code-split the application
+10:47:38.376 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+10:47:38.376 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+10:47:38.376 [32m✓ built in 5.48s[39m
+10:47:38.444 
+10:47:38.444   dist/index.js  14.4kb
+10:47:38.444 
+10:47:38.444 ⚡ Done in 9ms
+10:47:38.479 Installing dependencies...
+10:47:39.636 
+10:47:39.636 up to date in 1s
+10:47:39.637 
+10:47:39.637 66 packages are looking for funding
+10:47:39.637   run `npm fund` for details
+10:47:39.851 Using TypeScript 5.6.3 (local user-provided)
+10:47:54.204 Build Completed in /vercel/output [24s]
+10:47:54.491 Deploying outputs...
+10:48:02.179 Deployment completed
+10:48:02.990 Creating build cache...
+10:48:20.537 Created build cache: 17.555s
+10:48:20.538 Uploading build cache [79.05 MB]
+10:48:21.485 Build cache uploaded: 945.995ms
