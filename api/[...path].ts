@@ -12,6 +12,9 @@ async function getApp() {
 
 // Vercel serverless function handler
 export default async function handler(req: any, res: any) {
+  // Vercel strips /api from the path, so prepend it back for Express routing
+  req.url = `/api${req.url}`;
+  
   const app = await getApp();
   return app(req, res);
 }
