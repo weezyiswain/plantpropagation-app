@@ -303,5 +303,26 @@ function createExpressApp() {
 // Vercel serverless function handler
 export default async function handler(req: any, res: any) {
   const expressApp = createExpressApp();
+  
+  // Reconstruct the full URL from Vercel's catch-all path segments
+  // Vercel captures path segments in req.query.path as an array
+  const pathSegments = req.query?.path;
+  if (pathSegments) {
+    // Build the path from segments
+    const path = Array.isArray(pathSegments) ? pathSegments.join('/') : pathSegments;
+    
+    // Extract other query parameters (excluding 'path')
+    const queryParams = { ...req.query };
+    delete queryParams.path;
+    
+    // Rebuild query string
+    const queryString = Object.keys(queryParams).length > 0
+      ? '?' + new URLSearchParams(queryParams).toString()
+      : '';
+    
+    // Reconstruct full URL for Express
+    req.url = `/api/${path}${queryString}`;
+  }
+  
   return expressApp(req, res);
 }
