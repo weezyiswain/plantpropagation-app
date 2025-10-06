@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { Sprout, Calendar, Scissors, Sun, Droplet, Leaf, AlertCircle, ArrowLeft, CheckCircle, MapPin } from "lucide-react";
 import { calculatePropagationWindows, getRecommendedMethod } from "@/lib/propagation-calculator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AdPlaceholder } from "@/components/ad-placeholder";
 import { DifficultyBadge } from "@/components/difficulty-badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState, useEffect } from "react";
@@ -185,10 +184,6 @@ export default function Results() {
               </div>
             </div>
 
-            {/* Top Banner Ad */}
-            <AdPlaceholder slot="results-top-banner" format="leaderboard" />
-            <AdPlaceholder slot="results-top-mobile" format="mobile-banner" />
-
             <div className="grid lg:grid-cols-3 gap-8">
               {/* Main Content */}
               <div className="lg:col-span-2 space-y-8">
@@ -327,10 +322,6 @@ export default function Results() {
                   </CardContent>
                 </Card>
 
-                {/* Mid-Content Ad */}
-                <AdPlaceholder slot="results-mid-content" format="leaderboard" />
-                <AdPlaceholder slot="results-mid-mobile" format="mobile-banner" />
-
                 {/* Optimal Timing Card */}
                 <Card className="shadow-lg">
                   <CardContent className="p-6">
@@ -405,10 +396,6 @@ export default function Results() {
                     </div>
                   </CardContent>
                 </Card>
-
-                {/* Bottom Banner Ad */}
-                <AdPlaceholder slot="results-bottom-banner" format="leaderboard" />
-                <AdPlaceholder slot="results-bottom-mobile" format="mobile-banner" />
               </div>
 
               {/* Sidebar */}
@@ -439,9 +426,6 @@ export default function Results() {
                     </div>
                   </CardContent>
                 </Card>
-
-                {/* Sidebar Ad 1 */}
-                <AdPlaceholder slot="results-sidebar-1" format="rectangle" />
 
                 {/* Care Tips */}
                 <Card className="shadow-lg">
@@ -522,9 +506,6 @@ export default function Results() {
                     </div>
                   </CardContent>
                 </Card>
-
-                {/* Sidebar Ad 2 */}
-                <AdPlaceholder slot="results-sidebar-2" format="rectangle" />
 
                 {/* Actions */}
                 <div className="space-y-3">

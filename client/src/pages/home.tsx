@@ -11,7 +11,6 @@ import { useEffect, useState } from "react";
 import { autoDetectUSDAZone } from "@/lib/zone-detection";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { AdPlaceholder } from "@/components/ad-placeholder";
 
 const USDA_ZONES = [
   "1a", "1b", "2a", "2b", "3a", "3b", "4a", "4b", "5a", "5b",
@@ -247,14 +246,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* After Hero Ad */}
-      <div className="bg-background py-6">
-        <div className="container mx-auto px-4">
-          <AdPlaceholder slot="home-after-hero" format="leaderboard" />
-          <AdPlaceholder slot="home-after-hero-mobile" format="mobile-banner" />
-        </div>
-      </div>
-
       {/* Popular Plants */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
@@ -299,14 +290,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* After Popular Plants Ad */}
-      <div className="bg-background py-6">
-        <div className="container mx-auto px-4">
-          <AdPlaceholder slot="home-after-plants" format="leaderboard" />
-          <AdPlaceholder slot="home-after-plants-mobile" format="mobile-banner" />
-        </div>
-      </div>
 
       {/* Footer */}
       <footer className="bg-card border-t border-border py-12">
