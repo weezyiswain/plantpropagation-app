@@ -304,6 +304,10 @@ function createExpressApp() {
 export default async function handler(req: any, res: any) {
   const expressApp = createExpressApp();
   
+  // Log incoming request for debugging
+  console.log('[Handler] Original req.url:', req.url);
+  console.log('[Handler] req.query:', req.query);
+  
   // Reconstruct the full URL from Vercel's catch-all path segments
   // Vercel captures path segments in req.query.path as an array
   const pathSegments = req.query?.path;
@@ -322,6 +326,7 @@ export default async function handler(req: any, res: any) {
     
     // Reconstruct full URL for Express
     req.url = `/api/${path}${queryString}`;
+    console.log('[Handler] Reconstructed req.url:', req.url);
   }
   
   return expressApp(req, res);
