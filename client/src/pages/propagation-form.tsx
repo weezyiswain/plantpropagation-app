@@ -240,14 +240,15 @@ export default function PropagationForm() {
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                     {/* Selected Plant Display */}
                     <div className="bg-accent/20 rounded-lg p-4 flex items-center space-x-4">
-                      {/* Temporarily hiding images - uncomment when ready to troubleshoot */}
-                      {/* {plant.imageUrl && (
+                      {plant.imageUrl && (
                         <img
                           src={plant.imageUrl}
                           alt={plant.commonName}
                           className="w-16 h-16 rounded-lg object-cover"
+                          referrerPolicy="no-referrer"
+                          crossOrigin="anonymous"
                         />
-                      )} */}
+                      )}
                       <div>
                         <h4 className="font-semibold text-foreground">
                           {plant.commonName}

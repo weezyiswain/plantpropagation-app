@@ -180,9 +180,10 @@ Preferred communication style: Simple, everyday language.
 - Uses wouter Link component with href="/" and data-testid="link-home-logo"
 - Hover effect (opacity-80) provides visual feedback for clickable state
 
-**Temporary Image Handling (October 2025):**
-- **Plant images temporarily hidden** via code comments (not deleted) for launch troubleshooting
-- PlantCard component displays green gradient fallback with Sprout icon for all plants
-- Propagation form page image display also commented out
-- Image code preserved with "uncomment when ready to troubleshoot" markers
-- Fallback icons maintain visual consistency and layout during image debugging phase
+**Image Display Status (October 2025):**
+- Image display code has been uncommented and enabled
+- Added `referrerPolicy="no-referrer"` and `crossOrigin="anonymous"` attributes for Wikipedia image compatibility
+- All components (PlantCard, PlantSearch, propagation form) have image tags enabled
+- Fallback green gradient with Sprout icon shows only when images fail to load
+- **Current Issue**: Images not loading in browser despite code being correct - under investigation
+- Image URLs from Wikipedia (upload.wikimedia.org) are valid and accessible

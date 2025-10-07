@@ -92,6 +92,8 @@ export function PlantSearch({ onPlantSelect }: PlantSearchProps) {
                       src={plant.imageUrl}
                       alt={plant.commonName}
                       className="w-12 h-12 rounded-md object-cover"
+                      referrerPolicy="no-referrer"
+                      crossOrigin="anonymous"
                     />
                   )}
                   <div>
