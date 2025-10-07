@@ -7,7 +7,7 @@ import { DifficultyBadge } from "@/components/difficulty-badge";
 
 interface PlantCardProps {
   plant: Plant;
-  onPlantSelect?: (plantId: string) => void;
+  onPlantSelect?: (plant: Plant) => void;
 }
 
 export function PlantCard({ plant, onPlantSelect }: PlantCardProps) {
@@ -20,7 +20,7 @@ export function PlantCard({ plant, onPlantSelect }: PlantCardProps) {
 
   const handleClick = () => {
     if (onPlantSelect) {
-      onPlantSelect(plant.id);
+      onPlantSelect(plant);
     } else {
       setLocation(`/propagation-form/${plant.id}`);
     }

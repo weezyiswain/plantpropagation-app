@@ -1,5 +1,5 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Plant, InsertPropagationRequest } from "@shared/schema";
+import { useQuery } from "@tanstack/react-query";
+import { Plant } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Sprout, ArrowLeft, AlertCircle, MapPin, ArrowUpDown, Search } from "lucide-react";
 import { useLocation, Link } from "wouter";
@@ -8,10 +8,10 @@ import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { autoDetectUSDAZone } from "@/lib/zone-detection";
-import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { DifficultyBadge } from "@/components/difficulty-badge";
+import { getPlantSlug } from "@/lib/slug";
 
 const USDA_ZONES = [
   "1a", "1b", "2a", "2b", "3a", "3b", "4a", "4b", "5a", "5b",
@@ -68,24 +68,6 @@ export default function AllPlants() {
     localStorage.setItem('userZone', zone);
   };
 
-  const createRequestMutation = useMutation({
-    mutationFn: async (data: InsertPropagationRequest) => {
-      const res = await apiRequest("POST", "/api/propagation-requests", data);
-      return res.json();
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/propagation-requests"] });
-      setLocation(`/results/${data.id}`);
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Please select your growing zone first",
-        variant: "destructive",
-      });
-    },
-  });
-
   const difficultyOrder: Record<string, number> = {
     'easy': 1,
     'medium': 2,
@@ -132,7 +114,7 @@ export default function AllPlants() {
       }
     });
 
-  const handlePlantClick = (plantId: string) => {
+  const handlePlantClick = (plant: Plant) => {
     if (!selectedZone) {
       toast({
         title: "Zone Required",
@@ -142,12 +124,9 @@ export default function AllPlants() {
       return;
     }
 
-    createRequestMutation.mutate({
-      plantId,
-      zone: selectedZone,
-      maturity: "mature",
-      environment: "inside",
-    });
+    // Navigate directly to plant guide
+    const slug = getPlantSlug(plant);
+    setLocation(`/guide/${slug}`);
   };
 
   return (
@@ -312,7 +291,7 @@ export default function AllPlants() {
                 {filteredAndSortedPlants.map((plant) => (
                   <button
                     key={plant.id}
-                    onClick={() => handlePlantClick(plant.id)}
+                    onClick={() => handlePlantClick(plant)}
                     className="bg-card hover:bg-accent/50 border border-border rounded-lg p-6 text-left transition-colors group"
                     data-testid={`plant-item-${plant.id}`}
                   >

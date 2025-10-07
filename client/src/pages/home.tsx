@@ -1,5 +1,5 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Plant, InsertPropagationRequest } from "@shared/schema";
+import { useQuery } from "@tanstack/react-query";
+import { Plant } from "@shared/schema";
 import { PlantSearch } from "@/components/plant-search";
 import { PlantCard } from "@/components/plant-card";
 import { Button } from "@/components/ui/button";
@@ -9,8 +9,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useEffect, useState } from "react";
 import { autoDetectUSDAZone } from "@/lib/zone-detection";
-import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { getPlantSlug } from "@/lib/slug";
 
 const USDA_ZONES = [
   "1a", "1b", "2a", "2b", "3a", "3b", "4a", "4b", "5a", "5b",
@@ -54,24 +54,6 @@ export default function Home() {
     localStorage.setItem('userZone', zone);
   };
 
-  const createRequestMutation = useMutation({
-    mutationFn: async (data: InsertPropagationRequest) => {
-      const res = await apiRequest("POST", "/api/propagation-requests", data);
-      return res.json();
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/propagation-requests"] });
-      setLocation(`/results/${data.id}`);
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Please select your growing zone first",
-        variant: "destructive",
-      });
-    },
-  });
-
   const popularPlants = plants.slice(0, 4);
   const topPlants = ["pothos-golden", "snake-plant", "monstera-deliciosa", "fiddle-leaf-fig"];
 
@@ -91,7 +73,7 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleQuickPlantSelect = (plantId: string) => {
+  const handleQuickPlantSelect = (plant: Plant) => {
     // Check if zone is selected
     if (!selectedZone) {
       toast({
@@ -102,13 +84,9 @@ export default function Home() {
       return;
     }
 
-    // Create request with defaults and go straight to results
-    createRequestMutation.mutate({
-      plantId,
-      zone: selectedZone,
-      maturity: "mature",
-      environment: "inside",
-    });
+    // Navigate directly to plant guide
+    const slug = getPlantSlug(plant);
+    setLocation(`/guide/${slug}`);
   };
 
   return (
@@ -235,7 +213,7 @@ export default function Home() {
                         <Button
                           key={plantId}
                           variant="secondary"
-                          onClick={() => handleQuickPlantSelect(plantId)}
+                          onClick={() => handleQuickPlantSelect(plant)}
                           className="text-sm"
                           data-testid={`button-quick-${plantId}`}
                         >
