@@ -21,27 +21,23 @@ const USDA_ZONES = [
 ];
 
 export default function Results() {
-  const { requestId } = useParams<{ requestId: string }>();
+  const { plantSlug } = useParams<{ plantSlug: string }>();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
 
-  const { data: request, isLoading: requestLoading } = useQuery<PropagationRequest>({
-    queryKey: ["/api/propagation-requests", requestId],
-    enabled: !!requestId,
-  });
-
   const { data: plant, isLoading: plantLoading } = useQuery<Plant>({
-    queryKey: ["/api/plants", request?.plantId],
-    enabled: !!request?.plantId,
+    queryKey: ["/api/plants/slug", plantSlug],
+    queryFn: async () => {
+      const res = await fetch(`/api/plants/slug/${plantSlug}`);
+      if (!res.ok) throw new Error('Plant not found');
+      return res.json();
+    },
+    enabled: !!plantSlug,
   });
 
-  const [selectedZone, setSelectedZone] = useState<string>(request?.zone || "");
-
-  useEffect(() => {
-    if (request?.zone) {
-      setSelectedZone(request.zone);
-    }
-  }, [request?.zone]);
+  const [selectedZone, setSelectedZone] = useState<string>(() => {
+    return localStorage.getItem('userZone') || '';
+  });
 
   // Set page title with plant name
   useEffect(() => {
@@ -50,37 +46,12 @@ export default function Results() {
     }
   }, [plant?.name]);
 
-  const changeZoneMutation = useMutation({
-    mutationFn: async (newZone: string) => {
-      if (!request || !plant) return;
-      const data: InsertPropagationRequest = {
-        plantId: request.plantId,
-        zone: newZone,
-        maturity: request.maturity,
-        environment: request.environment,
-      };
-      const res = await apiRequest("POST", "/api/propagation-requests", data);
-      return res.json();
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["/api/propagation-requests"] });
-      setLocation(`/results/${data.id}`);
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to change zone",
-        variant: "destructive",
-      });
-    },
-  });
-
   const handleZoneChange = (zone: string) => {
     setSelectedZone(zone);
-    changeZoneMutation.mutate(zone);
+    localStorage.setItem('userZone', zone);
   };
 
-  const isLoading = requestLoading || plantLoading;
+  const isLoading = plantLoading;
 
   if (isLoading) {
     return (
@@ -109,12 +80,12 @@ export default function Results() {
     );
   }
 
-  if (!request || !plant) {
+  if (!plant) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Card>
           <CardContent className="p-6">
-            <p className="text-muted-foreground">Results not found</p>
+            <p className="text-muted-foreground">Plant not found</p>
             <Button onClick={() => setLocation("/")} className="mt-4">
               Return Home
             </Button>
@@ -123,6 +94,16 @@ export default function Results() {
       </div>
     );
   }
+
+  // Create request object for calculations
+  const request: PropagationRequest = {
+    id: 'temp',
+    plantId: plant.id,
+    zone: selectedZone,
+    maturity: 'mature',
+    environment: 'inside',
+    createdAt: new Date()
+  };
 
   const { primary, secondary, zoneInfo, adjustedSuccessRate } = calculatePropagationWindows(plant, request);
   const recommendedMethod = getRecommendedMethod(plant);

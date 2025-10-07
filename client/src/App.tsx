@@ -15,7 +15,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/all-plants" component={AllPlants} />
       <Route path="/propagation-form/:plantId" component={PropagationForm} />
-      <Route path="/results/:requestId" component={Results} />
+      <Route path="/guide/:plantSlug" component={Results} />
       <Route component={NotFound} />
     </Switch>
   );
