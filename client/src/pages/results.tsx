@@ -43,6 +43,13 @@ export default function Results() {
     }
   }, [request?.zone]);
 
+  // Set page title with plant name
+  useEffect(() => {
+    if (plant?.name) {
+      document.title = `${plant.name} - Plant Propagation Guide`;
+    }
+  }, [plant?.name]);
+
   const changeZoneMutation = useMutation({
     mutationFn: async (newZone: string) => {
       if (!request || !plant) return;

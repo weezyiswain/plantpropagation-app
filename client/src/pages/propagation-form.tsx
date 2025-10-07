@@ -87,6 +87,15 @@ export default function PropagationForm() {
     },
   });
 
+  // Set page title
+  useEffect(() => {
+    if (plant?.name) {
+      document.title = `${plant.name} - Propagation Form`;
+    } else {
+      document.title = "Propagation Form";
+    }
+  }, [plant?.name]);
+
   // Auto-detect USDA zone on mount
   useEffect(() => {
     const detectZone = async () => {

@@ -56,7 +56,7 @@ export default function AllPlants() {
   }, []);
 
   useEffect(() => {
-    document.title = "All Plants - PlantProp";
+    document.title = "All Plants";
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
       metaDescription.setAttribute('content', 'Browse our complete database of plants for propagation. Find detailed propagation guides, success rates, and step-by-step instructions for each plant.');

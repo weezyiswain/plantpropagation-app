@@ -30,6 +30,11 @@ export default function Home() {
     queryKey: ["/api/plants"],
   });
 
+  // Set page title
+  useEffect(() => {
+    document.title = "Plant Propagation Guide";
+  }, []);
+
   // Auto-detect zone on mount if not already set
   useEffect(() => {
     const detectZone = async () => {
