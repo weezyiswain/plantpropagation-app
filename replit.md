@@ -182,8 +182,10 @@ Preferred communication style: Simple, everyday language.
 
 **Image Display Status (October 2025):**
 - Image display code has been uncommented and enabled
-- Added `referrerPolicy="no-referrer"` and `crossOrigin="anonymous"` attributes for Wikipedia image compatibility
-- All components (PlantCard, PlantSearch, propagation form) have image tags enabled
-- Fallback green gradient with Sprout icon shows only when images fail to load
-- **Current Issue**: Images not loading in browser despite code being correct - under investigation
-- Image URLs from Wikipedia (upload.wikimedia.org) are valid and accessible
+- All components (PlantCard, PlantSearch, propagation form) have image tags enabled with proper error handling
+- Fallback green gradient with Sprout icon shows when images fail to load
+- **Root Cause Identified**: Wikipedia image URLs in database are returning 404 errors (broken links)
+  - Tested multiple image URLs - all returning HTTP 404
+  - Wikipedia commons images have been moved or deleted
+  - Image code is working correctly - fallback displays as designed when URLs are invalid
+- **Solution Needed**: Database imageUrl values need to be updated with valid, working image URLs

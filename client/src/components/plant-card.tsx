@@ -38,9 +38,7 @@ export function PlantCard({ plant, onPlantSelect }: PlantCardProps) {
           alt={plant.commonName}
           className="w-full h-48 object-cover"
           loading="lazy"
-          decoding="async"
           referrerPolicy="no-referrer"
-          crossOrigin="anonymous"
           onError={() => setImageError(true)}
         />
       ) : (
