@@ -46,13 +46,14 @@ Preferred communication style: Simple, everyday language.
 - `GET /api/plants` - Retrieve all plants
 - `GET /api/plants/search?q=` - Search plants by name
 - `GET /api/plants/:id` - Get specific plant details
+- `GET /api/plants/slug/:slug` - Get plant by SEO-friendly slug (e.g., "monstera-deliciosa")
 - `POST /api/propagation-requests` - Create propagation request
 - `GET /api/propagation-requests/:id` - Retrieve propagation request
 
 **Key Pages:**
 - `/` - Homepage with plant search, popular plants, and zone selector in header
 - `/all-plants` - Complete plant list with sorting (6 options) and difficulty filtering, simplified display
-- `/results/:requestId` - Propagation results and recommendations with instant access
+- `/guide/:plantSlug` - SEO-friendly plant propagation guide pages (e.g., /guide/monstera-deliciosa, /guide/snake-plant)
 
 ### Data Storage
 
@@ -151,8 +152,17 @@ Preferred communication style: Simple, everyday language.
 **Component Architecture:**
 - PlantCard and PlantSearch accept onPlantSelect callbacks for unified plant selection
 - Direct-to-results flow bypasses legacy form route
-- Mutation-based navigation creates propagation request and redirects atomically
 - Toast notifications provide feedback when zone is missing
+
+**SEO-Friendly URLs:**
+- Plant guide pages use descriptive slugs: `/guide/:plantSlug` (e.g., `/guide/monstera-deliciosa`, `/guide/snake-plant`)
+- Slug generation utility (`getPlantSlug`, `slugify`) converts plant names to URL-friendly format:
+  - Lowercase conversion
+  - Spaces replaced with hyphens
+  - Special characters removed (except hyphens)
+- Backend endpoint `GET /api/plants/slug/:slug` fetches plants by slug
+- Navigation from home page and all-plants page uses slugs for clean, indexable URLs
+- Improves SEO by including plant names directly in URLs instead of numeric IDs
 
 **Ad Monetization Infrastructure:**
 - Strategic ad placement zones throughout the site for revenue generation
