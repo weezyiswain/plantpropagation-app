@@ -31,6 +31,14 @@ function getDBConnection() {
   return cachedPool;
 }
 
+// Helper function to create slug from plant name
+function slugify(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')  // Replace non-alphanumeric with hyphen
+    .replace(/^-+|-+$/g, '');      // Remove leading/trailing hyphens
+}
+
 // Helper function to map database row to Plant type
 function mapRowToPlant(row: any) {
   const id = String(row.id);
@@ -107,6 +115,41 @@ async function getPlantById(id: string) {
     return undefined;
   } catch (err) {
     console.error('[Storage] getPlantById error:', err);
+    return undefined;
+  }
+}
+
+async function getPlantBySlug(slug: string) {
+  if (!process.env.DATABASE_URL) {
+    return undefined;
+  }
+
+  const pool = getDBConnection();
+  
+  try {
+    const db = drizzle(pool);
+    
+    // Get all plants and find matching slug
+    const results = await db.execute(
+      sql`SELECT * FROM "plants"`
+    );
+    
+    if (results.rows && results.rows.length > 0) {
+      // Find plant where slugified name matches the requested slug
+      const plant = results.rows.find(row => {
+        const plantName = row.name || row.common_name || '';
+        const plantSlug = slugify(plantName);
+        return plantSlug === slug;
+      });
+      
+      if (plant) {
+        return mapRowToPlant(plant);
+      }
+    }
+    
+    return undefined;
+  } catch (err) {
+    console.error('[Storage] getPlantBySlug error:', err);
     return undefined;
   }
 }
@@ -246,6 +289,19 @@ function createExpressApp() {
       }
       const plants = await searchPlants(query);
       res.json(plants);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
+  // Get plant by slug (MUST be before /:id to avoid slug being treated as ID)
+  app.get("/api/plants/slug/:slug", async (req: Request, res: Response) => {
+    try {
+      const plant = await getPlantBySlug(req.params.slug);
+      if (!plant) {
+        return res.status(404).json({ message: "Plant not found" });
+      }
+      res.json(plant);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
