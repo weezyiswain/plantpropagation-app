@@ -28,6 +28,19 @@ export function registerRoutes(app: Express): void {
     }
   });
   
+  // Get plant by slug
+  app.get("/api/plants/slug/:slug", async (req, res) => {
+    try {
+      const plant = await storage.getPlantBySlug(req.params.slug);
+      if (!plant) {
+        return res.status(404).json({ message: "Plant not found" });
+      }
+      res.json(plant);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
   // Get plant by ID
   app.get("/api/plants/:id", async (req, res) => {
     try {

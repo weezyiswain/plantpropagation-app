@@ -12,6 +12,7 @@ export interface IStorage {
   // Plant methods
   getAllPlants(): Promise<Plant[]>;
   getPlantById(id: string): Promise<Plant | undefined>;
+  getPlantBySlug(slug: string): Promise<Plant | undefined>;
   searchPlants(query: string): Promise<Plant[]>;
   
   // Propagation request methods
@@ -152,6 +153,47 @@ export class MemStorage implements IStorage {
       }
       
       console.log('[Storage] Plant not found');
+      return undefined;
+    } catch (err) {
+      console.error('[Storage] Database lookup error:', err);
+      return undefined;
+    } finally {
+      await pool.end();
+    }
+  }
+  
+  async getPlantBySlug(slug: string): Promise<Plant | undefined> {
+    if (!process.env.DATABASE_URL) {
+      console.error('[Storage] DATABASE_URL not configured');
+      return undefined;
+    }
+
+    const pool = createDBConnection();
+    
+    try {
+      console.log('[Storage] Looking up plant by slug:', slug);
+      const db = drizzle(pool);
+      
+      // Get all plants and find matching slug
+      const results = await db.execute(
+        sql`SELECT * FROM "plants"`
+      );
+      
+      if (results.rows && results.rows.length > 0) {
+        // Find plant where slugified name matches the requested slug
+        const plant = results.rows.find(row => {
+          const plantName = row.name || row.common_name || '';
+          const plantSlug = slugify(plantName);
+          return plantSlug === slug;
+        });
+        
+        if (plant) {
+          console.log('[Storage] Found plant by slug:', plant.common_name);
+          return mapRowToPlant(plant);
+        }
+      }
+      
+      console.log('[Storage] Plant not found for slug:', slug);
       return undefined;
     } catch (err) {
       console.error('[Storage] Database lookup error:', err);
