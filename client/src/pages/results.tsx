@@ -135,7 +135,7 @@ export default function Results() {
               <div className="text-center mb-4">
                 <div className="inline-flex items-center space-x-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium">
                   <CheckCircle className="h-4 w-4" />
-                  <span>Propagation Guide Generated</span>
+                  <span>Propagation Guide</span>
                 </div>
               </div>
               
@@ -150,7 +150,7 @@ export default function Results() {
                   Back
                 </Button>
                 <h3 className="flex-1 text-center text-3xl font-bold text-foreground -ml-20">
-                  {plant.commonName} Propagation Guide
+                  {plant.commonName}
                 </h3>
               </div>
               {/* Zone Selector */}
