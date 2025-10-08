@@ -164,15 +164,13 @@ Preferred communication style: Simple, everyday language.
 - Navigation from home page and all-plants page uses slugs for clean, indexable URLs
 - Improves SEO by including plant names directly in URLs instead of numeric IDs
 
-**Ad Monetization Infrastructure:**
-- Strategic ad placement zones throughout the site for revenue generation
-- Reusable AdPlaceholder component with responsive sizing for multiple ad formats
-- **Homepage placements**: After hero section, after popular plants section
-- **Results page placements**: Top banner, mid-content (between sections), bottom banner, sidebar rectangles
-- Responsive ad behavior: Desktop shows leaderboard (728x90) and rectangles (300x250), mobile shows banners (320x50)
-- All ad slots have unique identifiers (data-ad-slot, data-testid) for easy integration with ad networks
-- Fixed dimensions prevent layout shifts and maintain consistent user experience
-- Ready for Google AdSense, Mediavine, or custom ad network integration
+**Ad Monetization Status (October 2025):**
+- **AdSense Compliance**: All ad placeholder components have been removed from the site
+- Removed to fix Google AdSense policy violation: "Google-served ads on screens without publisher-content"
+- Site is now clean and ready for AdSense review
+- AdPlaceholder component file still exists in codebase but is not imported or rendered anywhere
+- Once AdSense is approved and real ad codes are provided, actual Google ad scripts can be added to pages
+- **Next Steps**: Submit site for Google AdSense review, then integrate actual ad code once approved
 
 **Logo Navigation:**
 - Logo (Plant Propagation icon + name) is clickable from all pages to return to homepage
